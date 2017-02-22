@@ -1,0 +1,167 @@
+﻿/*
+    Slykuiper  - Motion Graphics Design
+    Website & Portfolio - http://slykuiper.com
+    Twitter - @slykuiper
+    Instagram - @slykuiper
+    Email - corbin@slykuiper.com
+*/
+
+var expressionNames = [];
+var expressionCodes = [];
+
+function fetchExpression(expressionName){
+    for(i=0;i<expressionNames.length;i++){
+        if(expressionNames[i] == expressionName){
+            return expressionCodes[i];
+        }
+    }
+}
+
+function createExpression(name, code){
+    expressionNames.push(name);
+    expressionCodes.push(code); 
+}
+
+createExpression("seamless wiggle loop", '// name: seamless wiggle loop\n' +
+        '// author: Dan Ebberts\n' +
+        'freq = 1;\n' +
+        'amp = 110;\n' +
+        'loopTime = 3;\n' +
+        't = time % loopTime;\n' +
+        'wiggle1 = wiggle(freq, amp, 1, 0.5, t);\n' +
+        'wiggle2 = wiggle(freq, amp, 1, 0.5, t - loopTime);\n' +
+        'linear(t, 0, loopTime, wiggle1, wiggle2)');
+createExpression("overshoot", '// name: overshoot\n' +
+        '// author: Dan Ebberts\n' +
+        'amp = 80;\n' +
+        'freq = 1;\n' +
+        'decay = 1;\n' +
+        't = time - inPoint;\n' +
+        'amp*Math.sin(t*freq*Math.PI*2)/Math.exp(t*decay);');
+createExpression("calculation overshoot", '// name: calculation overshoot\n' +
+        '// author: Dan Ebberts\n' +
+        'freq = 3;\n' +
+        'decay = 5;\n' +
+        't = time - inPoint;\n' +
+        'startVal = [0,0];\n' +
+        'endVal = [200,200];\n' +
+        'dur = 0.1;\n' +
+        'if (t < dur){\n' +
+        '  linear(t,0,dur,startVal,endVal);\n' +
+        '}else{\n' +
+        '  amp = (endVal - startVal)/dur;\n' +
+        '  w = freq*Math.PI*2;\n' +
+        '  endVal + amp*(Math.sin((t-dur)*w)/Math.exp(decay*(t-dur))/w);\n' +
+        '}\n');
+createExpression("keyframe overshoot", '// name: keyframe overshoot\n' +
+        '// author: Dan Ebberts\n' +
+        'freq = 3;\n' +
+        'decay = 5;\n' +
+        'n = 0;\n' +
+        'if (numKeys > 0){\n' +
+        '  n = nearestKey(time).index;\n' +
+        '  if (key(n).time > time) n--;\n' +
+        '}\n' +
+        'if (n > 0){\n' +
+        '  t = time - key(n).time;\n' +
+        '  amp = velocityAtTime(key(n).time - .001);\n' +
+        '  w = freq*Math.PI*2;\n' +
+        '  value + amp*(Math.sin(t*w)/Math.exp(decay*t)/w);\n' +
+        '}else\n' +
+        '  value');
+createExpression("loopout pingpong", '// name: loopout pingpong\n' +
+        'loopOut("pingpong");');
+createExpression("loopout cycle", '// name: loopout cycle\n' +
+        'loopOut("cycle", 0);');
+createExpression("bounce back", '// name: bounce back\n' +
+        '// author: Dan Ebberts\n' +
+        'e = .7;\n' +
+        'g = 5000;\n' +
+        'nMax = 9;\n' +
+        'n = 0;\n' +
+        'if (numKeys > 0){\n' +
+        '  n = nearestKey(time).index;\n' +
+        '  if (key(n).time > time) n--;\n' +
+        '}\n' +
+        'if (n > 0){\n' +
+        '  t = time - key(n).time;\n' +
+        '  v = -velocityAtTime(key(n).time - .001)*e;\n' +
+        '  vl = length(v);\n' +
+        '  if (value instanceof Array){\n' +
+        '    vu = (vl > 0) ? normalize(v) : [0,0,0];\n' +
+        '  }else{\n' +
+        '    vu = (v < 0) ? -1 : 1;\n' +
+        '  }\n' +
+        '  tCur = 0;\n' +
+        '  segDur = 2*vl/g;\n' +
+        '  tNext = segDur;\n' +
+        '  nb = 1; // number of bounces\n' +
+        '  while (tNext < t && nb <= nMax){\n' +
+        '    vl *= e;\n' +
+        '    segDur *= e;\n' +
+        '    tCur = tNext;\n' +
+        '    tNext += segDur;\n' +
+        '    nb++\n' +
+        '  }\n' +
+        '  if(nb <= nMax){\n' +
+        '    delta = t - tCur;\n' +
+        '    value +  vu*delta*(vl - g*delta/2);\n' +
+        '  }else{\n' +
+        '    value\n' +
+        '  }\n' +
+        '}else\n' +
+        '  value');
+createExpression("inertial bounce", '// name: inertial bounce\n' +
+        '// author: Dan Ebberts\n' +
+        'n = 0;\n' +
+        'if (numKeys > 0){\n' +
+        'n = nearestKey(time).index;\n' +
+        'if (key(n).time > time){\n' +
+        'n--;}}\n' +
+        'if (n == 0){\n' +
+        't = 0;\n' +
+        '}else{\n' +
+        't = time - key(n).time;\n' +
+        '}\n' +
+        'if (n > 0 && t < 1){\n' +
+        'v = velocityAtTime(key(n).time - thisComp.frameDuration/10);\n' +
+        'amp = .05;\n' +
+        'freq = 4.0;\n' +
+        'decay = 8.0;\n' +
+        'value + v*amp*Math.sin(freq*t*2*Math.PI)/Math.exp(decay*t);\n' +
+        '}else{\n' +
+        'value;\n' +
+        '}');
+createExpression("circle path", '// name: circle path\n' +
+        '// author: Ewan Smith\n' +
+        'radius=300;\n' +
+        'angle=time*200;\n' +
+        'x=radius*Math.cos(degreesToRadians(angle));\n' +
+        'y=radius*Math.sin(degreesToRadians(angle));\n' +
+        'z=0;\n' +
+        'centre=[640,360,0];\n' +
+        'add(centre,[x,y,z]);\n');
+createExpression("spiral path", '// name: spiral path\n' +
+        '// author: Ewan Smith\n' +
+        'shrink=time+1;\n' +
+        'radius=1000/shrink;\n' +
+        'angle=time*200;\n' +
+        'x=radius*Math.cos(degreesToRadians(angle));\n' +
+        'y=radius*Math.sin(degreesToRadians(angle));\n' +
+        '//z=0 // no depth;\n' +
+        'z=time*time // with depth;\n' +
+        'centre=[640,360,0];\n' +
+        'add(centre,[x,y,z]);\n');
+createExpression("rot based xpos", '// name: rotation based on x position\n' +
+        'dist = 0;\n' +
+        'torque = 1;\n' +
+        'x = transform.position[0]+dist;\n' +
+        '(360*x/(Math.PI*width))*torque;');
+createExpression("path xpos offset", '// name: trim path offset based on x position\n' +
+        '// apply this to the shape layers trim path offset\n' +
+        '// get pathlength from illustrator\n' +
+        'pathScale = transform.scale[0]/100;\n' +
+        'pathLength = 1000;\n' +
+        'pathLength=pathLength*pathScale;\n' +
+        'transform.position[0]/pathLength * 360;');
+        
