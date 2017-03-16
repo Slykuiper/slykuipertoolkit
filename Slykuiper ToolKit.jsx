@@ -35,7 +35,7 @@
                                     myStaticText: StaticText{text:'http://slykuiper.com'},\
                                 },\
                                 rightSide: Group{alignChildren:['right', ''],\
-                                    myImageBtn: Image{},\
+                                    myImageBtn: IconButton{},\
                                 },\
                             },\
                         }";
@@ -49,6 +49,12 @@
                 try{
                     watermarkBtn.image = File("slykuiper_img/logosmall.png");
                 }catch(err){alert("The 'slykuiper_img' folder needs to be in the same location as Slykuiper ToolKit.jsx");}
+                 palette.grp.watermark.rightSide.myImageBtn.onClick = function(){
+                     if ($.os.indexOf("Windows") !== -1)
+                        system.callSystem("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" + " " + "http://slykuiper.com");
+                    else
+                        system.callSystem("osascript -e 'open location \"" + "http://slykuiper.com" + "\"'");    
+                 }
             }
             
             function createDropDownFunctions(){
