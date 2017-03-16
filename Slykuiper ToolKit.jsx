@@ -30,7 +30,7 @@
                                     infoButton: Button{text:'Info'},\
                                 },\
                             },\
-                            watermark: Panel{orientation:'row', alignment:['fill', 'bottom'], alignChildren:['fill', ''],\
+                            watermark: Group{orientation:'row', alignment:['fill', 'bottom'], alignChildren:['fill', ''],\
                                 leftSide: Group{alignChildren:['left', ''],\
                                     myStaticText: StaticText{text:'http://slykuiper.com'},\
                                 },\
