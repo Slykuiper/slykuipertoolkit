@@ -36,11 +36,10 @@
                         }";
                         
             palette.grp = palette.add(res);
-            
             createDropDownFunctions();
             createAdditionalUI();
             
-            function createAdditionalUI(){
+            function createAdditionalUI(){ // create additional menu objects
                 var watermarkBtn = palette.grp.watermark.rightSide.myImageBtn;
                 try{
                     watermarkBtn.image = File("slykuiper_img/logosmall.png");
@@ -54,7 +53,7 @@
                    expressionDDList.add("item",expressionNames[i]);
                 }
                 expressionDDList.selection = 0; // set dropdown list selection to first in array
-                expressionDDList.onChange = function(){ // create selection listening function
+                expressionDDList.onChange = function(){ //dropdown list listening function
                    //alert(expressionDDList.selection);
                 }
                 palette.grp.dropDownCollection.submitButton.onClick = function(){ // apply expression that's in dropdown list's selection when "Apply" is pressed.
