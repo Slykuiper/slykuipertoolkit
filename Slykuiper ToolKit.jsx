@@ -22,8 +22,13 @@
                                 myStaticText: StaticText{text:'Slykuiper ToolKit'},\
                             },\
                             dropDownCollection: Group{orientation:'row', alignChildren:['fill', ''],\
-                                theDropDownList: DropDownList{properties:{}},\
-                                submitButton: Button{text:'Apply'},\
+                                leftSide: Group{orientation:'column', alignment:['fill', 'top'],\
+                                    theDropDownList: DropDownList{properties:{}},\
+                                },\
+                                rightSide: Group{orientation:'column',\
+                                    submitButton: Button{text:'Apply'},\
+                                    infoButton: Button{text:'Info'},\
+                                },\
                             },\
                             watermark: Panel{orientation:'row', alignment:['fill', 'bottom'], alignChildren:['fill', ''],\
                                 leftSide: Group{alignChildren:['left', ''],\
@@ -48,22 +53,23 @@
             
             function createDropDownFunctions(){
                 // populate dropdown list with expression names
-                var expressionDDList =  palette.grp.dropDownCollection.theDropDownList;
+                var expressionDDList =  palette.grp.dropDownCollection.leftSide.theDropDownList;
                 for(i=0;i<expressionNames.length;i++){
                    expressionDDList.add("item",expressionNames[i]);
                 }
                 expressionDDList.selection = 0; // set dropdown list selection to first in array
-                expressionDDList.onChange = function(){ //dropdown list listening function
-                   //alert(expressionDDList.selection);
-                }
-                palette.grp.dropDownCollection.submitButton.onClick = function(){ // apply expression that's in dropdown list's selection when "Apply" is pressed.
+                expressionDDList.onChange = function(){} //dropdown list listening function
+                palette.grp.dropDownCollection.rightSide.submitButton.onClick = function(){ // apply expression that's in dropdown list's selection when "Apply" is pressed.
                     var activeComp = app.project.activeItem; 
                     if(activeComp && activeComp instanceof CompItem){ // if the active element is a composition
                         var sel = activeComp.selectedProperties; // selected properties stored in variable
                         if(sel.length > 0){ // if it's an actual selection, set the expression
-                            sel[0].expression = fetchExpression(expressionDDList.selection.text);
+                            sel[0].expression = fetchExpression(expressionDDList.selection.text, "code");
                         }
                     }
+                }
+                palette.grp.dropDownCollection.rightSide.infoButton.onClick = function(){
+                    fetchExpression(expressionDDList.selection.text, "info");
                 }
             }
         
