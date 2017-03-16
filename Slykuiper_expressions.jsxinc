@@ -166,3 +166,7 @@ createExpression("path xpos offset", '// name: trim path offset based on x posit
         'pathLength=pathLength*pathScale;\n' +
         'transform.position[0]/pathLength * 360;',
         "Apply to a shapelayer Trim Paths operator. Creates tracks/treads that appear to stay on ground and move in the correct motion. Get the pathLength variable from a path in Illustrator. Select the path, go to Window > Document Info > Dropdown Icon > Objects");
+createExpression("Beam 3Dto2D", '// name: Beam 3Dto2D\n' +
+        'L = layerhere;\n' +
+        'L.toComp([0,0,0]);',
+        "Use this on a solid layer with the Beam Effect applied, on the Starting Point and Ending Point. L needs to be the 3d layers in your comp.");
