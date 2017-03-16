@@ -17,8 +17,6 @@
             palette.orientation = 'stack';
             palette.alignChildren = ['fill','fill'];
             
-            var imgLogo = File("slykuiper_img/logosmall.png");
-            
             res = "group{orientation:'column', alignChildren:['fill', 'top'],\
                             header: Panel{orientation:'column',\
                                 myStaticText: StaticText{text:'Slykuiper ToolKit'},\
@@ -27,9 +25,9 @@
                                 theDropDownList: DropDownList{properties:{}},\
                                 submitButton: Button{text:'Apply'},\
                             },\
-                            watermark: Panel{orientation:'row', alignChildren:['fill', ''],\
+                            watermark: Panel{orientation:'row', alignment:['fill', 'bottom'], alignChildren:['fill', ''],\
                                 leftSide: Group{alignChildren:['left', ''],\
-                                    myStaticText: StaticText{text:''},\
+                                    myStaticText: StaticText{text:'http://slykuiper.com'},\
                                 },\
                                 rightSide: Group{alignChildren:['right', ''],\
                                     myImageBtn: Image{},\
@@ -39,33 +37,33 @@
                         
             palette.grp = palette.add(res);
             
-            populateDropDown();
-            addUIStuff();
+            createDropDownFunctions();
+            createAdditionalUI();
             
-            function addUIStuff(){
-                watermarkTxt = palette.grp.watermark.leftSide.myStaticText;
-                watermarkBtn = palette.grp.watermark.rightSide.myImageBtn;
-                
-                watermarkTxt.add("text", "sly");
-                watermarkBtn.add("image", imgLogo2);
+            function createAdditionalUI(){
+                var watermarkBtn = palette.grp.watermark.rightSide.myImageBtn;
+                try{
+                    watermarkBtn.image = File("slykuiper_img/logosmall.png");
+                }catch(err){alert("The 'slykuiper_img' folder needs to be in the same location as Slykuiper ToolKit.jsx");}
             }
             
-            function populateDropDown(){
-                var dropdownVar =  palette.grp.dropDownCollection.theDropDownList;
+            function createDropDownFunctions(){
+                // populate dropdown list with expression names
+                var expressionDDList =  palette.grp.dropDownCollection.theDropDownList;
                 for(i=0;i<expressionNames.length;i++){
-                   dropdownVar.add("item",expressionNames[i]);
+                   expressionDDList.add("item",expressionNames[i]);
                 }
-               dropdownVar.selection = 0;
-            }
-
-            function callExpression(name){
-                var expressionName = name;
-                var activeComp = app.project.activeItem; 
-                
-                if(activeComp && activeComp instanceof CompItem){ // if the active element is a composition
-                    var sel = activeComp.selectedProperties; // selected properties stored in variable
-                    if(sel.length > 0){ // if it's an actual selection, set the expression
-                        sel[0].expression = fetchExpression(expressionName);
+                expressionDDList.selection = 0; // set dropdown list selection to first in array
+                expressionDDList.onChange = function(){ // create selection listening function
+                   //alert(expressionDDList.selection);
+                }
+                palette.grp.dropDownCollection.submitButton.onClick = function(){ // apply expression that's in dropdown list's selection when "Apply" is pressed.
+                    var activeComp = app.project.activeItem; 
+                    if(activeComp && activeComp instanceof CompItem){ // if the active element is a composition
+                        var sel = activeComp.selectedProperties; // selected properties stored in variable
+                        if(sel.length > 0){ // if it's an actual selection, set the expression
+                            sel[0].expression = fetchExpression(expressionDDList.selection.text);
+                        }
                     }
                 }
             }
