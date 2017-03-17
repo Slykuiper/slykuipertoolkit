@@ -21,7 +21,7 @@ function fetchExpression(expressionName, tag){
     else if (tag == "info"){
         for(i=0;i<expressionNames.length;i++){
             if(expressionNames[i] == expressionName){
-                alert(expressionInfo[i]);
+                alert(expressionInfo[i], expressionName);
             }
         }
     }
