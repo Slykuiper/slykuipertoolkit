@@ -53,7 +53,7 @@
                 }
                 // logo button
                 var watermarkBtn = mainUI.grp.watermark.rightSide.myImageBtn;
-                try{ /*watermarkBtn.image = File("slykuiper_img/logosmall.png"); */}catch(err){alert("The 'slykuiper_img' folder needs to be in the same location as Slykuiper ToolKit.jsx");}
+                try{ watermarkBtn.image = File("slykuiper_img/logosmall.png"); }catch(err){alert("The 'slykuiper_img' folder needs to be in the same location as Slykuiper ToolKit.jsx");}
                  watermarkBtn.onClick = function(){
                      if ($.os.indexOf("Windows") !== -1)
                         system.callSystem("C:/Program Files (x86)/Google/Chrome/Application/chrome.exe" + " " + "http://slykuiper.com");
