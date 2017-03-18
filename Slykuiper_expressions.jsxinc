@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
     Slykuiper  - Motion Graphics Design
     Website & Portfolio - http://slykuiper.com
     Twitter - @slykuiper
@@ -11,18 +11,10 @@ var expressionCodes = [];
 var expressionInfo = [];
 
 function fetchExpression(expressionName, tag){
-    if(tag == "code"){
-        for(i=0;i<expressionNames.length;i++){
-            if(expressionNames[i] == expressionName){
-                return expressionCodes[i];
-            }
-        }
-    }
-    else if (tag == "info"){
-        for(i=0;i<expressionNames.length;i++){
-            if(expressionNames[i] == expressionName){
-                alert(expressionInfo[i], expressionName);
-            }
+    for(i=0;i<expressionNames.length;i++){
+        if(expressionNames[i] == expressionName){
+            if(tag == "code"){return expressionCodes[i];}
+            else if (tag == "info"){return expressionInfo[i];}
         }
     }
 }
