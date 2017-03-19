@@ -162,3 +162,13 @@ createExpression("Beam 3Dto2D", '// name: Beam 3Dto2D\n' +
         'L = layerhere;\n' +
         'L.toComp([0,0,0]);',
         "Use this on a solid layer with the Beam Effect applied, on the Starting Point and Ending Point. L needs to be the 3d layers in your comp.");
+createExpression("Angle Rotation Control", '// name: Angle Rotation Control\n' +
+        '// author: Mike Overbeck\n' +
+        'var theRotator = anglecontrolhere % 360;\n' +
+        'var theDuration = thisLayer.source.duration;\n' +
+        'var rotFactor = theDuration / 360;\n' +
+        'if(theRotator < 0){\n' +
+        'theRotator = 360 + theRotator;\n' +
+        '}\n' +
+        'theRotator * rotFactor;',
+        "Creates an Angle Control on looped rotating source footage. Add an Angle Control expression control to the layer and link up to theRotator variable.");
