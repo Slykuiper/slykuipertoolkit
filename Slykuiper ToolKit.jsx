@@ -49,7 +49,7 @@
                 expressionDDList.onChange = function(){
                     infoBoxTopText.text = expressionDDList.selection.text;
                     infoBoxTopText.text = infoBoxTopText.text.toUpperCase();
-                    infoBoxBottomText.text = fetchExpression(expressionDDList.selection.text, "info");
+                    infoBoxBottomText.text = getExpressionInfo(expressionDDList.selection.text);
                 }
                 // logo button
                 var watermarkBtn = mainUI.grp.watermark.rightSide.myImageBtn;
@@ -93,9 +93,10 @@
                 mainUI.grp.dropDownCollection.rightSide.applyBtn.onClick = function(){ // apply expression that's in dropdown list's selection when "Apply" is pressed.
                     var activeComp = app.project.activeItem; 
                     if(activeComp && activeComp instanceof CompItem){ // if the active element is a composition
-                        var sel = activeComp.selectedProperties; // selected properties stored in variable
-                        if(sel.length > 0){ // if it's an actual selection, set the expression
-                            sel[0].expression = fetchExpression(expressionDDList.selection.text, "code");
+                        var thisLayer = activeComp.selectedLayers[0]; // selected layer
+                        var thisLayerProperties = activeComp.selectedProperties; // selected properties stored in variable
+                        if(thisLayerProperties.length > 0){ // if it's an actual selection, set the expression
+                            applyExpression(expressionDDList.selection.text);
                         }
                     }
                 }
