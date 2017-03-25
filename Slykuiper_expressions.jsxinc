@@ -131,7 +131,7 @@ createExpression("circle path",
     'y=effect("circle path")("Radius")*Math.sin(degreesToRadians(time*effect("circle path")("Speed")));\n' +
     'z=0;\n' +
     'centre=[effect("circle path")("Center")[0],effect("circle path")("Center")[1],0];\n' +
-    'add(centre,[x,y,z]);\n',
+    'add(centre,[x,y,z]);',
     "Apply on the position property of a layer. Moves the position layer in a circular motion with variables for radius amount and angle/speed.");
 createExpression("spiral path", 
     '// name: spiral path\n' +
@@ -141,8 +141,8 @@ createExpression("spiral path",
     'x=radius*Math.cos(degreesToRadians(time*effect("spiral path")("Speed")));\n' +
     'y=radius*Math.sin(degreesToRadians(time*effect("spiral path")("Speed")));\n' +
     'z=time*effect("spiral path")("Z-Rate");\n' +
-    'centre=[effect("spiral path")("Center")[0],effect("spiral path")("Center")[1],0];\n' +
-    'add(centre,[x,y,z]);\n',
+    'centre=[960,540,0];\n' +
+    'add(centre,[x,y,z]);',
     "Apply on the position property of a layer. Moves the position layer in a spiral motion with variables for radius amount, angle/speed, and shrink or grow (time-1).");
 createExpression("rot based xpos", 
     '// name: rotation based on x position\n' +
@@ -154,10 +154,10 @@ createExpression("rot based ypos",
     'y = transform.position[1]+effect("rot based ypos")("Distance");\n' +
     '(360*y/(Math.PI*width))*torque = effect("rot based ypos")("Torque");', 
     "Rotate a layer based on its y position.");
-createExpression("Angle Rotation Control", 
-    '// name: Angle Rotation Control\n' +
+createExpression("Angle Duration Control", 
+    '// name: Angle Duration Control\n' +
     '// author: Mike Overbeck\n' +
-    'var theRotator = effect("Angle Rotation Control")("Angle") % 360;\n' +
+    'var theRotator = effect("Angle Duration Control")("Angle") % 360;\n' +
     'var theDuration = thisLayer.source.duration;\n' +
     'var rotFactor = theDuration / 360;\n' +
     'if(theRotator < 0){\n' +
