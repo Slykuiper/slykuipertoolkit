@@ -1,0 +1,42 @@
+<!-- Slykuiper_ToolKit_Start -->
+<Effect matchname="seamless wiggle loop" name="$$$/AE/Preset/slykuiper_expr1=seamless wiggle loop">
+    <Slider name="$$$/AE/Preset/slider=Frequency" default="1" valid_min="0" valid_max="10" slider_min="0" slider_max="10"  precision="2" />
+    <Slider name="$$$/AE/Preset/slider=Amplitude" default="50" valid_min="-100000" valid_max="100000" slider_min="-100000" slider_max="100000"  precision="2" />
+    <Slider name="$$$/AE/Preset/slider=Loop Time" default="3" valid_min="0" valid_max="1000" slider_min="0" slider_max="1000"  precision="2" />
+</Effect>
+<Effect matchname="keyframe overshoot" name="$$$/AE/Preset/slykuiper_expr2=keyframe overshoot">
+    <Slider name="$$$/AE/Preset/slider=Frequency" default="2" valid_min="0.001" valid_max="100" slider_min="0.001" slider_max="10"  precision="2" />
+    <Slider name="$$$/AE/Preset/slider=Decay" default="5" valid_min="0" valid_max="100" slider_min="0" slider_max="10" precision="2" />
+</Effect>
+<Effect matchname="keyframe bounce back" name="$$$/AE/Preset/slykuiper_expr3=keyframe bounce back">
+    <Slider name="$$$/AE/Preset/slider=e" default="0.7" valid_min="-100000" valid_max="100000" slider_min="-10" slider_max="10"  precision="2" />
+    <Slider name="$$$/AE/Preset/slider=g" default="5000" valid_min="-100000" valid_max="100000" slider_min="-10000" slider_max="10000" />
+    <Slider name="$$$/AE/Preset/slider=nMax" default="9" valid_min="0" valid_max="10" slider_min="0" slider_max="1000" />
+</Effect>
+<Effect matchname="inertial bounce" name="$$$/AE/Preset/slykuiper_expr4=inertial bounce">
+    <Slider name="$$$/AE/Preset/slider=Amplitude" default="0.05" valid_min="-100000" valid_max="100000" slider_min="-100" slider_max="100"  precision="2" />
+    <Slider name="$$$/AE/Preset/slider=Frequency" default="4" valid_min="0" valid_max="1000" slider_min="0" slider_max="1000" precision="1" />
+    <Slider name="$$$/AE/Preset/slider=Decay" default="8" valid_min="0" valid_max="10" slider_min="0" slider_max="1000" precision="1" />
+</Effect>
+<Effect matchname="circle path" name="$$$/AE/Preset/slykuiper_expr5=circle path">
+    <Slider name="$$$/AE/Preset/slider=Radius" default="300" valid_min="0" valid_max="10000" slider_min="0" slider_max="10000" />
+    <Slider name="$$$/AE/Preset/slider=Speed" default="200" valid_min="0" valid_max="1000" slider_min="0" slider_max="1000" />
+    <Point name="$$$/AE/Preset/point=Center" default_x="0.5" default_y="0.5" />
+</Effect>
+<Effect matchname="spiral path" name="$$$/AE/Preset/slykuiper_expr6=spiral path">
+    <Slider name="$$$/AE/Preset/slider=Radius" default="300" valid_min="0" valid_max="10000" slider_min="0" slider_max="10000" />
+    <Slider name="$$$/AE/Preset/slider=Speed" default="200" valid_min="0" valid_max="1000" slider_min="0" slider_max="1000" />
+    <Slider name="$$$/AE/Preset/slider=Z-Rate" default="0" valid_min="-10000" valid_max="10000" slider_min="-10000" slider_max="10000" />
+</Effect>
+<Effect matchname="rot based xpos" name="$$$/AE/Preset/slykuiper_expr7=rot based xpos">
+    <Slider name="$$$/AE/Preset/slider=Distance" default="0" valid_min="-100000" valid_max="100000" slider_min="-100000" slider_max="100000" />
+    <Slider name="$$$/AE/Preset/slider=Torque" default="1" valid_min="-1000" valid_max="1000" slider_min="-100" slider_max="100" />
+</Effect>
+<Effect matchname="rot based ypos" name="$$$/AE/Preset/slykuiper_expr8=rot based ypos">
+    <Slider name="$$$/AE/Preset/slider=Distance" default="0" valid_min="-100000" valid_max="100000" slider_min="-100000" slider_max="100000" />
+    <Slider name="$$$/AE/Preset/slider=Torque" default="1" valid_min="-1000" valid_max="1000" slider_min="-100" slider_max="100" />
+</Effect>
+<Effect matchname="Angle Duration Control" name="$$$/AE/Preset/slykuiper_expr9=Angle Duration Control">
+    <Angle name="$$$/AE/Preset/angle=Angle" default="0" />
+</Effect>
+<!-- Slykuiper_ToolKit_End -->
