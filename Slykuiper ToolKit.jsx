@@ -26,7 +26,7 @@
                                     theDropDownList: DropDownList{properties:{}},\
                                 },\
                                 rightSide: Group{orientation:'column',\
-                                    applyBtn: Button{text:'Apply'},\
+                                    applyExpression: Button{text:'Apply'},\
                                     infoBtn: Button{text:'Info'},\
                                 },\
                             },\
@@ -90,7 +90,7 @@
                 }
                 expressionDDList.selection = 0; // set dropdown list selection to first in array
                 expressionDDList.onChange = function(){} //dropdown list listening function
-                mainUI.grp.dropDownCollection.rightSide.applyBtn.onClick = function(){ // apply expression that's in dropdown list's selection when "Apply" is pressed.
+                mainUI.grp.dropDownCollection.rightSide.applyExpression.onClick = function(){ // apply expression that's in dropdown list's selection when "Apply" is pressed.
                     var activeComp = app.project.activeItem; 
                     if(activeComp && activeComp instanceof CompItem){ // if the active element is a composition
                         var thisLayer = activeComp.selectedLayers[0]; // selected layer

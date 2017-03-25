@@ -21,28 +21,16 @@ function applyExpression(expressionName){
     var thisLayerProperties = app.project.activeItem.selectedProperties; // selected layer properties
     for(i=0;i<expressionNames.length;i++){
         if(expressionNames[i] == expressionName){ // found matching expression
-            // add effects first, then add expression
-            if(expressionName == "seamless wiggle loop"){
-                applyEffect(thisLayer, "ADBE Slider Control", "wiggleFreq", 1);
-                applyEffect(thisLayer, "ADBE Slider Control", "wiggleAmp", 50);
-                applyEffect(thisLayer, "ADBE Slider Control", "wiggleLoopTime", 3);
+            if(expressionName == "loopout pingpong" || expressionName == "loopout cycle" || expressionName == "Beam 3Dto2D" || expressionName == "path xpos offset"){
+                //expression doesn't have any preset/sliders/controls
+                thisLayerProperties[0].expression = expressionCodes[i];
+            }else{
+                // expression has presets/sliders/controls
+                thisLayer.Effects.addProperty(expressionName);
+                thisLayerProperties[0].expression = expressionCodes[i];
             }
-            if(expressionName == "keyframe overshoot"){
-                applyEffect(thisLayer, "ADBE Slider Control", "keyframe overshoot freq", 2);
-                applyEffect(thisLayer, "ADBE Slider Control", "keyframe overshoot decay", 5);
-            }
-            if(expressionName == "Angle Rotation Control"){
-                applyEffect(thisLayer, "ADBE Angle Control", "Y Angle Control", 0);
-            }
-            thisLayerProperties[0].expression = expressionCodes[i];
         }
     }
-}
-
-function applyEffect(layer, property, name, value){
-        var effectControl = layer.Effects.addProperty(property);
-        effectControl.name = name;
-        effectControl(1).setValue(value);
 }
 
 function createExpression(name, code, info, hasControls){
@@ -51,22 +39,18 @@ function createExpression(name, code, info, hasControls){
     expressionInfo.push(info); 
 }
 
+// expressions with controls
 createExpression("seamless wiggle loop", 
     '// name: seamless wiggle loop\n' +
     '// author: Dan Ebberts\n' +
-    'freq = effect("wiggleFreq")("Slider");\n' +
-    'amp = effect("wiggleAmp")("Slider");\n' +
-    'loopTime = effect("wiggleLoopTime")("Slider");\n' +
-    't = time % loopTime;\n' +
-    'wiggle1 = wiggle(freq, amp, 1, 0.5, t);\n' +
-    'wiggle2 = wiggle(freq, amp, 1, 0.5, t - loopTime);\n' +
-    'linear(t, 0, loopTime, wiggle1, wiggle2)', 
+    't = time % effect("seamless wiggle loop")("Loop Time");\n' +
+    'wiggle1 = wiggle(effect("seamless wiggle loop")("Frequency"), effect("seamless wiggle loop")("Amplitude"), 1, 0.5, t);\n' +
+    'wiggle2 = wiggle(effect("seamless wiggle loop")("Frequency"), effect("seamless wiggle loop")("Amplitude"), 1, 0.5, t - effect("seamless wiggle loop")("Loop Time"));\n' +
+    'linear(t, 0, effect("seamless wiggle loop")("Loop Time"), wiggle1, wiggle2)', 
     "Seamlessly wiggle any layer property with variable frequency, amplitude, and loop time.");
 createExpression("keyframe overshoot", 
     '// name: keyframe overshoot\n' +
     '// author: Dan Ebberts\n' +
-    'freq = effect("keyframe overshoot freq")("Slider");\n' +
-    'decay = effect("keyframe overshoot decay")("Slider");\n' +
     'n = 0;\n' +
     'if (numKeys > 0){\n' +
     '  n = nearestKey(time).index;\n' +
@@ -75,25 +59,17 @@ createExpression("keyframe overshoot",
     'if (n > 0){\n' +
     '  t = time - key(n).time;\n' +
     '  amp = velocityAtTime(key(n).time - .001);\n' +
-    '  w = freq*Math.PI*2;\n' +
-    '  value + amp*(Math.sin(t*w)/Math.exp(decay*t)/w);\n' +
+    '  w = effect("keyframe overshoot")("Frequency")*Math.PI*2;\n' +
+    '  value + amp*(Math.sin(t*w)/Math.exp(effect("keyframe overshoot")("Decay")*t)/w);\n' +
     '}else\n' +
     '  value',
     "Overshoot expression applied to a keyframed animation. Adjustable frequency and decay variables.");
-createExpression("loopout pingpong", 
-    '// name: loopout pingpong\n' +
-    'loopOut("pingpong");',
-    "Loops a segment of time that is measured from the last keyframe on the layer back toward the In point of the layer. Repeats the specified segment, alternating between forward and backward.");
-createExpression("loopout cycle", 
-    '// name: loopout cycle\n' +
-    'loopOut("cycle", 0);', 
-    "Loops all keyframes in a cyclical manner, starting from first keyframe to last.");
 createExpression("keyframe bounce back", 
     '// name: keyframe bounce back\n' +
     '// author: Dan Ebberts\n' +
-    'e = .7;\n' +
-    'g = 5000;\n' +
-    'nMax = 9;\n' +
+    'e = effect("keyframe bounce back")("e");\n' +
+    'g = effect("keyframe bounce back")("g");\n' +
+    'nMax = effect("keyframe bounce back")("nMax");\n' +
     'n = 0;\n' +
     'if (numKeys > 0){\n' +
     '  n = nearestKey(time).index;\n' +
@@ -143,10 +119,7 @@ createExpression("inertial bounce",
     '}\n' +
     'if (n > 0 && t < 1){\n' +
     'v = velocityAtTime(key(n).time - thisComp.frameDuration/10);\n' +
-    'amp = .05;\n' +
-    'freq = 4.0;\n' +
-    'decay = 8.0;\n' +
-    'value + v*amp*Math.sin(freq*t*2*Math.PI)/Math.exp(decay*t);\n' +
+    'value + v*effect("inertial bounce")("Amplitude")*Math.sin(effect("inertial bounce")("Frequency")*t*2*Math.PI)/Math.exp(effect("inertial bounce")("Decay")*t);\n' +
     '}else{\n' +
     'value;\n' +
     '}',
@@ -154,41 +127,58 @@ createExpression("inertial bounce",
 createExpression("circle path", 
     '// name: circle path\n' +
     '// author: Ewan Smith\n' +
-    'radius=300;\n' +
-    'angle=time*200;\n' +
-    'x=radius*Math.cos(degreesToRadians(angle));\n' +
-    'y=radius*Math.sin(degreesToRadians(angle));\n' +
+    'x=effect("circle path")("Radius")*Math.cos(degreesToRadians(time*effect("circle path")("Speed")));\n' +
+    'y=effect("circle path")("Radius")*Math.sin(degreesToRadians(time*effect("circle path")("Speed")));\n' +
     'z=0;\n' +
-    'centre=[640,360,0];\n' +
+    'centre=[effect("circle path")("Center")[0],effect("circle path")("Center")[1],0];\n' +
     'add(centre,[x,y,z]);\n',
     "Apply on the position property of a layer. Moves the position layer in a circular motion with variables for radius amount and angle/speed.");
 createExpression("spiral path", 
     '// name: spiral path\n' +
     '// author: Ewan Smith\n' +
     'shrink=time+1;\n' +
-    'radius=1000/shrink;\n' +
-    'angle=time*200;\n' +
-    'x=radius*Math.cos(degreesToRadians(angle));\n' +
-    'y=radius*Math.sin(degreesToRadians(angle));\n' +
-    '//z=0 // no depth;\n' +
-    'z=time*time // with depth;\n' +
-    'centre=[640,360,0];\n' +
+    'radius=effect("spiral path")("Radius")/shrink;\n' +
+    'x=radius*Math.cos(degreesToRadians(time*effect("spiral path")("Speed")));\n' +
+    'y=radius*Math.sin(degreesToRadians(time*effect("spiral path")("Speed")));\n' +
+    'z=time*effect("spiral path")("Z-Rate");\n' +
+    'centre=[effect("spiral path")("Center")[0],effect("spiral path")("Center")[1],0];\n' +
     'add(centre,[x,y,z]);\n',
     "Apply on the position property of a layer. Moves the position layer in a spiral motion with variables for radius amount, angle/speed, and shrink or grow (time-1).");
 createExpression("rot based xpos", 
     '// name: rotation based on x position\n' +
-    'dist = 0;\n' +
-    'torque = 1;\n' +
-    'x = transform.position[0]+dist;\n' +
-    '(360*x/(Math.PI*width))*torque;', 
+    'x = transform.position[0]+effect("rot based xpos")("Distance");\n' +
+    '(360*x/(Math.PI*width))*effect("rot based xpos")("Torque");', 
     "Rotate a layer based on its x position.");
 createExpression("rot based ypos", 
     '// name: rotation based on y position\n' +
-    'dist = 0;\n' +
-    'torque = 1;\n' +
-    'y = transform.position[1]+dist;\n' +
-    '(360*y/(Math.PI*width))*torque;', 
+    'y = transform.position[1]+effect("rot based ypos")("Distance");\n' +
+    '(360*y/(Math.PI*width))*torque = effect("rot based ypos")("Torque");', 
     "Rotate a layer based on its y position.");
+createExpression("Angle Rotation Control", 
+    '// name: Angle Rotation Control\n' +
+    '// author: Mike Overbeck\n' +
+    'var theRotator = effect("Angle Rotation Control")("Angle") % 360;\n' +
+    'var theDuration = thisLayer.source.duration;\n' +
+    'var rotFactor = theDuration / 360;\n' +
+    'if(theRotator < 0){\n' +
+    'theRotator = 360 + theRotator;\n' +
+    '}\n' +
+    'theRotator * rotFactor;',
+    "Apply to layer's Time Remap. Creates an Angle Control on looped rotating source footage. Add an Angle Control expression control to the layer and link up to theRotator variable.");
+// expression without controls
+createExpression("loopout pingpong", 
+    '// name: loopout pingpong\n' +
+    'loopOut("pingpong");',
+    "Loops a segment of time that is measured from the last keyframe on the layer back toward the In point of the layer. Repeats the specified segment, alternating between forward and backward.");
+createExpression("loopout cycle", 
+    '// name: loopout cycle\n' +
+    'loopOut("cycle", 0);', 
+    "Loops all keyframes in a cyclical manner, starting from first keyframe to last.");
+createExpression("Beam 3Dto2D", 
+    '// name: Beam 3Dto2D\n' +
+    'L = layerhere;\n' +
+    'L.toComp([0,0,0]);',
+    "Use this on a solid layer with the Beam Effect applied, on the Starting Point and Ending Point. L needs to be the 3d layers in your comp.");
 createExpression("path xpos offset", 
     '// name: trim path offset based on x position\n' +
     '// apply this to the shape layers trim path offset\n' +
@@ -198,19 +188,3 @@ createExpression("path xpos offset",
     'pathLength=pathLength*pathScale;\n' +
     'transform.position[0]/pathLength * 360;',
     "Apply to a shapelayer Trim Paths operator. Creates tracks/treads that appear to stay on ground and move in the correct motion. Get the pathLength variable from a path in Illustrator. Select the path, go to Window > Document Info > Dropdown Icon > Objects");
-createExpression("Beam 3Dto2D", 
-    '// name: Beam 3Dto2D\n' +
-    'L = layerhere;\n' +
-    'L.toComp([0,0,0]);',
-    "Use this on a solid layer with the Beam Effect applied, on the Starting Point and Ending Point. L needs to be the 3d layers in your comp.");
-createExpression("Angle Rotation Control", 
-    '// name: Angle Rotation Control\n' +
-    '// author: Mike Overbeck\n' +
-    'var theRotator = effect("Y Angle Control")("Angle") % 360;\n' +
-    'var theDuration = thisLayer.source.duration;\n' +
-    'var rotFactor = theDuration / 360;\n' +
-    'if(theRotator < 0){\n' +
-    'theRotator = 360 + theRotator;\n' +
-    '}\n' +
-    'theRotator * rotFactor;',
-    "Apply to layer's Time Remap. Creates an Angle Control on looped rotating source footage. Add an Angle Control expression control to the layer and link up to theRotator variable.");
