@@ -24,6 +24,19 @@
                             dropDownCollection: Group{orientation:'row', alignChildren:['fill', ''],\
                                 leftSide: Group{orientation:'column', alignment:['fill', 'top'],\
                                     theDropDownList: DropDownList{properties:{}},\
+                                    rowOne: Group{orientation:'row', alignment:['fill','top'],\
+                                        buttonOne: IconButton{},\
+                                        buttonTwo: IconButton{},\
+                                        buttonThree: IconButton{},\
+                                    },\
+                                    rowTwo: Group{orientation:'row', alignment:['fill','top'],\
+                                        buttonOne: IconButton{},\
+                                        buttonTwo: IconButton{},\
+                                        buttonThree: IconButton{},\
+                                    },\
+                                    rowThree: Group{orientation:'row', alignment:['fill','top'],\
+                                        buttonOne: IconButton{},\
+                                    },\
                                 },\
                                 rightSide: Group{orientation:'column',\
                                     applyExpression: Button{text:'Apply'},\
@@ -43,6 +56,7 @@
             mainUI.grp = mainUI.add(mainUImenu);
             createDropDownFunctions();
             createAdditionalUI();
+            createLayers();
             
             function createAdditionalUI(){ // create additional menu objects
                 var expressionDDList =  mainUI.grp.dropDownCollection.leftSide.theDropDownList;
@@ -52,9 +66,17 @@
                     infoBoxBottomText.text = getExpressionInfo(expressionDDList.selection.text);
                 }
                 // logo button
-                var watermarkBtn = mainUI.grp.watermark.rightSide.myImageBtn;
-                try{ watermarkBtn.image = File("slykuiper_img/logosmall.png"); }catch(err){alert("The 'slykuiper_img' folder needs to be in the same location as Slykuiper ToolKit.jsx");}
-                 watermarkBtn.onClick = function(){
+                try{
+                    mainUI.grp.watermark.rightSide.myImageBtn.image = File("slykuiper_img/logosmall.png"); 
+                    mainUI.grp.dropDownCollection.leftSide.rowOne.buttonOne.image = File("slykuiper_img/textlayer.png"); 
+                    mainUI.grp.dropDownCollection.leftSide.rowOne.buttonTwo.image = File("slykuiper_img/solidlayer.png"); 
+                    mainUI.grp.dropDownCollection.leftSide.rowOne.buttonThree.image = File("slykuiper_img/lightlayer.png"); 
+                    mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonOne.image = File("slykuiper_img/cameralayer.png"); 
+                    mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonTwo.image = File("slykuiper_img/nulllayer.png"); 
+                    mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonThree.image = File("slykuiper_img/shapelayer.png"); 
+                    mainUI.grp.dropDownCollection.leftSide.rowThree.buttonOne.image = File("slykuiper_img/adjustmentlayer.png"); 
+                }catch(err){alert("The 'slykuiper_img' folder needs to be in the same location as Slykuiper ToolKit.jsx");}
+                 mainUI.grp.watermark.rightSide.myImageBtn.onClick = function(){
                      if ($.os.indexOf("Windows") !== -1)
                         system.callSystem("C:/Program Files (x86)/Google/Chrome/Application/chrome.exe" + " " + "http://slykuiper.com");
                     else
@@ -102,6 +124,73 @@
                 }
             }
         
+            function createLayers(){ // create layers
+                mainUI.grp.dropDownCollection.leftSide.rowOne.buttonOne.onClick = function(){createCompLayers("text");}
+                mainUI.grp.dropDownCollection.leftSide.rowOne.buttonTwo.onClick = function(){createCompLayers("solid");}
+                mainUI.grp.dropDownCollection.leftSide.rowOne.buttonThree.onClick = function(){createCompLayers("light");}
+                mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonOne.onClick = function(){createCompLayers("camera");}
+                mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonTwo.onClick = function(){createCompLayers("null");}
+                mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonThree.onClick = function(){createCompLayers("shape");}
+                mainUI.grp.dropDownCollection.leftSide.rowThree.buttonOne.onClick = function(){createCompLayers("adjustment");}
+                //mainUI.grp.dropDownCollection.leftSide.rowThree.buttonTwo.onClick = function(){}
+                //mainUI.grp.dropDownCollection.leftSide.rowThree.buttonThree.onClick = function(){}
+            }
+            
+            function createCompLayers(type){
+                var curComp = app.project.activeItem;
+                if (!curComp || !(curComp instanceof CompItem)){
+                    alert('noComp');
+                    return;
+                }
+                // what type of layer
+                if(type == "text"){
+                    str = prompt('Text: ', '');
+                    if(str.length < 1){
+                        return;
+                    }
+                    curComp.layers.addText(str);
+                }
+                if(type == "solid"){
+                    str = prompt('Solid layer name: ', '');
+                    if(str.length < 1){
+                        return;
+                    }
+                    var newSolid = curComp.layers.addSolid([1,1,1], str, curComp.width, curComp.height, curComp.pixelAspect, curComp.duration);
+                    newSolid.moveToBeginning();
+                }
+                if(type == "light"){
+                    str = prompt('Light name: ', '');
+                    if(str.length < 1){
+                        return;
+                    }
+                    curComp.layers.addLight(str, [curComp.width/2, curComp.height/2]);
+                }
+                if(type == "camera"){
+                    str = prompt('Camera name: ', '');
+                    if(str.length < 1){
+                        return;
+                    }
+                    var newCam = curComp.layers.addCamera(str, [curComp.width/2, curComp.height/2]);
+                    newCam.position = [curComp.width, curComp.height, -2400];
+                }
+                if(type == "null"){
+                    var newNull = curComp.layers.addNull(curComp.duration);
+                }
+                if(type == "shape"){
+                    curComp.layers.addShape();
+                }
+                if(type == "adjustment"){
+                    str = prompt('Adjustment layer name: ', '');
+                    if(str.length < 1){
+                        return;
+                    }
+                    var newAdj = curComp.layers.addSolid([1,1,1],str, curComp.width, curComp.height, curComp.pixelAspect, curComp.duration);
+                    newAdj.label = 5;
+                    newAdj.adjustmentLayer = true;
+                    newAdj.moveToBeginning();
+                }
+            }
+            
             // End of file stuff
             // Panel sizing
             mainUI.layout.layout(true);
