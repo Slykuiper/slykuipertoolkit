@@ -6,12 +6,10 @@
     Email - corbin@slykuiper.com
 */
 
-#include 'Slykuiper_expressions.jsxinc' // expression definitions & functions
+#include 'Slykuiper_func.jsxinc' // additional variables & functions
 
 {
     function myScript(thisObj){
-        var version = '0.5';
-        
         function myScript_buildUI(thisObj){
             var mainUI = (thisObj instanceof Panel) ? thisObj : new Window("palette", "Slykuiper ToolKit", undefined, {resizeable:true});
             mainUI.orientation = 'stack';
@@ -24,21 +22,23 @@
                             dropDownCollection: Group{orientation:'row', alignChildren:['fill', ''],\
                                 leftSide: Group{orientation:'column', alignment:['fill', 'top'],\
                                     theDropDownList: DropDownList{properties:{}},\
-                                    rowOne: Group{orientation:'row', alignment:['fill','top'],\
-                                        buttonOne: IconButton{},\
-                                        buttonTwo: IconButton{},\
-                                        buttonThree: IconButton{},\
+                                    rowOne: Group{orientation:'row', alignment:['fill','fill'],\
+                                        buttonOne: Group{},\
+                                        buttonTwo: Group{},\
+                                        buttonThree: Group{},\
                                     },\
-                                    rowTwo: Group{orientation:'row', alignment:['fill','top'],\
-                                        buttonOne: IconButton{},\
-                                        buttonTwo: IconButton{},\
-                                        buttonThree: IconButton{},\
+                                    rowTwo: Group{orientation:'row', alignment:['fill','fill'],\
+                                        buttonOne: Group{},\
+                                        buttonTwo: Group{},\
+                                        buttonThree: Group{},\
                                     },\
                                     rowThree: Group{orientation:'row', alignment:['fill','top'],\
-                                        buttonOne: IconButton{},\
+                                        buttonOne: Group{},\
+                                        buttonTwo: Group{},\
+                                        buttonThree: Group{},\
                                     },\
                                 },\
-                                rightSide: Group{orientation:'column',\
+                                rightSide: Group{orientation:'column', alignment:['','top'],\
                                     applyExpression: Button{text:'Apply'},\
                                     infoBtn: Button{text:'Info'},\
                                 },\
@@ -48,7 +48,7 @@
                                     myStaticText: StaticText{text:'http://slykuiper.com'},\
                                 },\
                                 rightSide: Group{alignChildren:['right', ''],\
-                                    myImageBtn: IconButton{},\
+                                    logo: Group{},\
                                 },\
                             },\
                         }";
@@ -56,32 +56,47 @@
             mainUI.grp = mainUI.add(mainUImenu);
             createDropDownFunctions();
             createAdditionalUI();
-            createLayers();
             
             function createAdditionalUI(){ // create additional menu objects
+                var obj_r1b1 = mainUI.grp.dropDownCollection.leftSide.rowOne.buttonOne;
+                var obj_r1b2 = mainUI.grp.dropDownCollection.leftSide.rowOne.buttonTwo;
+                var obj_r1b3 = mainUI.grp.dropDownCollection.leftSide.rowOne.buttonThree;
+                var obj_r2b1 = mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonOne;
+                var obj_r2b2 = mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonTwo;
+                var obj_r2b3 = mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonThree;
+                var obj_r3b1 = mainUI.grp.dropDownCollection.leftSide.rowThree.buttonOne;
+                var obj_r3b2 = mainUI.grp.dropDownCollection.leftSide.rowThree.buttonTwo;
+                var obj_r3b3 = mainUI.grp.dropDownCollection.leftSide.rowThree.buttonThree;
+                var obj_logo = mainUI.grp.watermark.rightSide.logo;
+                
+                var icon_r1b1 = buttonColorVector(obj_r1b1, icon_eye, '#FFFFFF', [45, 45]);
+                var icon_r1b2 = buttonColorVector(obj_r1b2, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_r1b3 = buttonColorVector(obj_r1b3, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_r2b1 = buttonColorVector(obj_r2b1, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_r2b2 = buttonColorVector(obj_r2b2, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_r2b3 = buttonColorVector(obj_r2b3, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_r3b1 = buttonColorVector(obj_r3b1, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_r3b2 = buttonColorVector(obj_r3b2, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_r3b3 = buttonColorVector(obj_r3b3, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_logo = buttonColorVector(obj_logo, icon_logo, '#FFFFFF', [45, 45]);
+                
+                icon_r1b1.onClick = function(){createCompLayers("text");}
+                icon_r1b2.onClick = function(){createCompLayers("solid");}
+                icon_r1b3.onClick = function(){createCompLayers("light");}
+                icon_r2b1.onClick = function(){createCompLayers("camera");}
+                icon_r2b2.onClick = function(){createCompLayers("null");}
+                icon_r2b3.onClick = function(){createCompLayers("shape");}
+                icon_r3b1.onClick = function(){createCompLayers("adjustment");}
+                //icon_r3b2.onClick = function(){createCompLayers("adjustment");}
+                //icon_r3b3.onClick = function(){createCompLayers("adjustment");}
+                icon_logo.onClick = function(){visitURL('http://slykuiper.com');};
+                
                 var expressionDDList =  mainUI.grp.dropDownCollection.leftSide.theDropDownList;
                 expressionDDList.onChange = function(){
                     infoBoxTopText.text = expressionDDList.selection.text;
                     infoBoxTopText.text = infoBoxTopText.text.toUpperCase();
                     infoBoxBottomText.text = getExpressionInfo(expressionDDList.selection.text);
                 }
-                // logo button
-                try{
-                    mainUI.grp.watermark.rightSide.myImageBtn.image = File("slykuiper_img/logosmall.png"); 
-                    mainUI.grp.dropDownCollection.leftSide.rowOne.buttonOne.image = File("slykuiper_img/textlayer.png"); 
-                    mainUI.grp.dropDownCollection.leftSide.rowOne.buttonTwo.image = File("slykuiper_img/solidlayer.png"); 
-                    mainUI.grp.dropDownCollection.leftSide.rowOne.buttonThree.image = File("slykuiper_img/lightlayer.png"); 
-                    mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonOne.image = File("slykuiper_img/cameralayer.png"); 
-                    mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonTwo.image = File("slykuiper_img/nulllayer.png"); 
-                    mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonThree.image = File("slykuiper_img/shapelayer.png"); 
-                    mainUI.grp.dropDownCollection.leftSide.rowThree.buttonOne.image = File("slykuiper_img/adjustmentlayer.png"); 
-                }catch(err){alert("The 'slykuiper_img' folder needs to be in the same location as Slykuiper ToolKit.jsx");}
-                 mainUI.grp.watermark.rightSide.myImageBtn.onClick = function(){
-                     if ($.os.indexOf("Windows") !== -1)
-                        system.callSystem("C:/Program Files (x86)/Google/Chrome/Application/chrome.exe" + " " + "http://slykuiper.com");
-                    else
-                        system.callSystem("osascript -e 'open location \"" + "http://slykuiper.com" + "\"'");    
-                 }
                 // info box
                 var infoBox = new Window('palette',"Expression Information",undefined,{closeButton:true,resizeable:false, orientation:["column"]});
                 infoBox.size = [300,300];
@@ -122,18 +137,6 @@
                         }
                     }
                 }
-            }
-        
-            function createLayers(){ // create layers
-                mainUI.grp.dropDownCollection.leftSide.rowOne.buttonOne.onClick = function(){createCompLayers("text");}
-                mainUI.grp.dropDownCollection.leftSide.rowOne.buttonTwo.onClick = function(){createCompLayers("solid");}
-                mainUI.grp.dropDownCollection.leftSide.rowOne.buttonThree.onClick = function(){createCompLayers("light");}
-                mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonOne.onClick = function(){createCompLayers("camera");}
-                mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonTwo.onClick = function(){createCompLayers("null");}
-                mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonThree.onClick = function(){createCompLayers("shape");}
-                mainUI.grp.dropDownCollection.leftSide.rowThree.buttonOne.onClick = function(){createCompLayers("adjustment");}
-                //mainUI.grp.dropDownCollection.leftSide.rowThree.buttonTwo.onClick = function(){}
-                //mainUI.grp.dropDownCollection.leftSide.rowThree.buttonThree.onClick = function(){}
             }
             
             function createCompLayers(type){

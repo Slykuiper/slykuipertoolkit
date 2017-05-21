@@ -1,0 +1,349 @@
+﻿﻿/*
+    Slykuiper  - Motion Graphics Design
+    Website & Portfolio - http://slykuiper.com
+    Twitter - @slykuiper
+    Instagram - @slykuiper
+    Email - corbin@slykuiper.com
+*/
+
+var expressionNames = [];
+var expressionCodes = [];
+var expressionInfo = [];
+
+function getExpressionInfo(expressionName){
+    for(i=0;i<expressionNames.length;i++){
+        if(expressionNames[i] == expressionName){return expressionInfo[i];}
+    }
+}
+
+function applyExpression(expressionName){
+    var thisLayer = app.project.activeItem.selectedLayers[0]; // selected layer
+    var thisLayerProperties = app.project.activeItem.selectedProperties; // selected layer properties
+    for(i=0;i<expressionNames.length;i++){
+        if(expressionNames[i] == expressionName){ // found matching expression
+            if(expressionName == "loopout pingpong" || expressionName == "loopout cycle" || expressionName == "Beam 3Dto2D" || expressionName == "path xpos offset"){
+                //expression doesn't have any preset/sliders/controls
+                thisLayerProperties[0].expression = expressionCodes[i];
+            }else{
+                // expression has presets/sliders/controls
+                thisLayer.Effects.addProperty(expressionName);
+                thisLayerProperties[0].expression = expressionCodes[i];
+            }
+        }
+    }
+}
+
+function createExpression(name, code, info, hasControls){
+    expressionNames.push(name);
+    expressionCodes.push(code); 
+    expressionInfo.push(info); 
+}
+
+// expressions with controls
+createExpression("seamless wiggle loop", 
+    '// name: seamless wiggle loop\n' +
+    '// author: Dan Ebberts\n' +
+    't = time % effect("seamless wiggle loop")("Loop Time");\n' +
+    'wiggle1 = wiggle(effect("seamless wiggle loop")("Frequency"), effect("seamless wiggle loop")("Amplitude"), 1, 0.5, t);\n' +
+    'wiggle2 = wiggle(effect("seamless wiggle loop")("Frequency"), effect("seamless wiggle loop")("Amplitude"), 1, 0.5, t - effect("seamless wiggle loop")("Loop Time"));\n' +
+    'linear(t, 0, effect("seamless wiggle loop")("Loop Time"), wiggle1, wiggle2)', 
+    "Seamlessly wiggle any layer property with variable frequency, amplitude, and loop time.");
+createExpression("keyframe overshoot", 
+    '// name: keyframe overshoot\n' +
+    '// author: Dan Ebberts\n' +
+    'n = 0;\n' +
+    'if (numKeys > 0){\n' +
+    '  n = nearestKey(time).index;\n' +
+    '  if (key(n).time > time) n--;\n' +
+    '}\n' +
+    'if (n > 0){\n' +
+    '  t = time - key(n).time;\n' +
+    '  amp = velocityAtTime(key(n).time - .001);\n' +
+    '  w = effect("keyframe overshoot")("Frequency")*Math.PI*2;\n' +
+    '  value + amp*(Math.sin(t*w)/Math.exp(effect("keyframe overshoot")("Decay")*t)/w);\n' +
+    '}else\n' +
+    '  value',
+    "Overshoot expression applied to a keyframed animation. Adjustable frequency and decay variables.");
+createExpression("keyframe bounce back", 
+    '// name: keyframe bounce back\n' +
+    '// author: Dan Ebberts\n' +
+    'e = effect("keyframe bounce back")("e");\n' +
+    'g = effect("keyframe bounce back")("g");\n' +
+    'nMax = effect("keyframe bounce back")("nMax");\n' +
+    'n = 0;\n' +
+    'if (numKeys > 0){\n' +
+    '  n = nearestKey(time).index;\n' +
+    '  if (key(n).time > time) n--;\n' +
+    '}\n' +
+    'if (n > 0){\n' +
+    '  t = time - key(n).time;\n' +
+    '  v = -velocityAtTime(key(n).time - .001)*e;\n' +
+    '  vl = length(v);\n' +
+    '  if (value instanceof Array){\n' +
+    '    vu = (vl > 0) ? normalize(v) : [0,0,0];\n' +
+    '  }else{\n' +
+    '    vu = (v < 0) ? -1 : 1;\n' +
+    '  }\n' +
+    '  tCur = 0;\n' +
+    '  segDur = 2*vl/g;\n' +
+    '  tNext = segDur;\n' +
+    '  nb = 1; // number of bounces\n' +
+    '  while (tNext < t && nb <= nMax){\n' +
+    '    vl *= e;\n' +
+    '    segDur *= e;\n' +
+    '    tCur = tNext;\n' +
+    '    tNext += segDur;\n' +
+    '    nb++\n' +
+    '  }\n' +
+    '  if(nb <= nMax){\n' +
+    '    delta = t - tCur;\n' +
+    '    value +  vu*delta*(vl - g*delta/2);\n' +
+    '  }else{\n' +
+    '    value\n' +
+    '  }\n' +
+    '}else\n' +
+    '  value',
+    "This expression uses a property's velocity coming into a keyframe to calculate a bounce-back (in the direction opposite to the incoming animation) with a series of diminishing bounces.");
+createExpression("inertial bounce", 
+    '// name: inertial bounce\n' +
+    '// author: Dan Ebberts\n' +
+    'n = 0;\n' +
+    'if (numKeys > 0){\n' +
+    'n = nearestKey(time).index;\n' +
+    'if (key(n).time > time){\n' +
+    'n--;}}\n' +
+    'if (n == 0){\n' +
+    't = 0;\n' +
+    '}else{\n' +
+    't = time - key(n).time;\n' +
+    '}\n' +
+    'if (n > 0 && t < 1){\n' +
+    'v = velocityAtTime(key(n).time - thisComp.frameDuration/10);\n' +
+    'value + v*effect("inertial bounce")("Amplitude")*Math.sin(effect("inertial bounce")("Frequency")*t*2*Math.PI)/Math.exp(effect("inertial bounce")("Decay")*t);\n' +
+    '}else{\n' +
+    'value;\n' +
+    '}',
+    "Bouncing animation from one keyframe to another.");
+createExpression("circle path", 
+    '// name: circle path\n' +
+    '// author: Ewan Smith\n' +
+    'x=effect("circle path")("Radius")*Math.cos(degreesToRadians(time*effect("circle path")("Speed")));\n' +
+    'y=effect("circle path")("Radius")*Math.sin(degreesToRadians(time*effect("circle path")("Speed")));\n' +
+    'z=0;\n' +
+    'centre=[effect("circle path")("Center")[0],effect("circle path")("Center")[1],0];\n' +
+    'add(centre,[x,y,z]);',
+    "Apply on the position property of a layer. Moves the position layer in a circular motion with variables for radius amount and angle/speed.");
+createExpression("spiral path", 
+    '// name: spiral path\n' +
+    '// author: Ewan Smith\n' +
+    'shrink=time+1;\n' +
+    'radius=effect("spiral path")("Radius")/shrink;\n' +
+    'x=radius*Math.cos(degreesToRadians(time*effect("spiral path")("Speed")));\n' +
+    'y=radius*Math.sin(degreesToRadians(time*effect("spiral path")("Speed")));\n' +
+    'z=time*effect("spiral path")("Z-Rate");\n' +
+    'centre=[960,540,0];\n' +
+    'add(centre,[x,y,z]);',
+    "Apply on the position property of a layer. Moves the position layer in a spiral motion with variables for radius amount, angle/speed, and shrink or grow (time-1).");
+createExpression("rot based xpos", 
+    '// name: rotation based on x position\n' +
+    'x = transform.position[0]+effect("rot based xpos")("Distance");\n' +
+    '(360*x/(Math.PI*width))*effect("rot based xpos")("Torque");', 
+    "Rotate a layer based on its x position.");
+createExpression("rot based ypos", 
+    '// name: rotation based on y position\n' +
+    'y = transform.position[1]+effect("rot based ypos")("Distance");\n' +
+    '(360*y/(Math.PI*width))*torque = effect("rot based ypos")("Torque");', 
+    "Rotate a layer based on its y position.");
+createExpression("Angle Duration Control", 
+    '// name: Angle Duration Control\n' +
+    '// author: Mike Overbeck\n' +
+    'var theRotator = effect("Angle Duration Control")("Angle") % 360;\n' +
+    'var theDuration = thisLayer.source.duration;\n' +
+    'var rotFactor = theDuration / 360;\n' +
+    'if(theRotator < 0){\n' +
+    'theRotator = 360 + theRotator;\n' +
+    '}\n' +
+    'theRotator * rotFactor;',
+    "Apply to layer's Time Remap. Creates an Angle Control on looped rotating source footage. Add an Angle Control expression control to the layer and link up to theRotator variable.");
+// expression without controls
+createExpression("loopout pingpong", 
+    '// name: loopout pingpong\n' +
+    'loopOut("pingpong");',
+    "Loops a segment of time that is measured from the last keyframe on the layer back toward the In point of the layer. Repeats the specified segment, alternating between forward and backward.");
+createExpression("loopout cycle", 
+    '// name: loopout cycle\n' +
+    'loopOut("cycle", 0);', 
+    "Loops all keyframes in a cyclical manner, starting from first keyframe to last.");
+createExpression("Beam 3Dto2D", 
+    '// name: Beam 3Dto2D\n' +
+    'L = layerhere;\n' +
+    'L.toComp([0,0,0]);',
+    "Use this on a solid layer with the Beam Effect applied, on the Starting Point and Ending Point. L needs to be the 3d layers in your comp.");
+createExpression("path xpos offset", 
+    '// name: trim path offset based on x position\n' +
+    '// apply this to the shape layers trim path offset\n' +
+    '// get pathLength from illustrator\n' +
+    'pathScale = transform.scale[0]/100;\n' +
+    'pathLength = 1000;\n' +
+    'pathLength=pathLength*pathScale;\n' +
+    'transform.position[0]/pathLength * 360;',
+    "Apply to a shapelayer Trim Paths operator. Creates tracks/treads that appear to stay on ground and move in the correct motion. Get the pathLength variable from a path in Illustrator. Select the path, go to Window > Document Info > Dropdown Icon > Objects");
+    
+// icon drawing function created by Adam Plouff at Battle Axe
+var JSON;JSON||(JSON={}); (function(){function k(a){return a<10?"0"+a:a}function o(a){p.lastIndex=0;return p.test(a)?'"'+a.replace(p,function(a){var c=r[a];return typeof c==="string"?c:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+a+'"'}function l(a,j){var c,d,h,m,g=e,f,b=j[a];b&&typeof b==="object"&&typeof b.toJSON==="function"&&(b=b.toJSON(a));typeof i==="function"&&(b=i.call(j,a,b));switch(typeof b){case "string":return o(b);case "number":return isFinite(b)?String(b):"null";case "boolean":case "null":return String(b);case "object":if(!b)return"null"; e+=n;f=[];if(Object.prototype.toString.apply(b)==="[object Array]"){m=b.length;for(c=0;c<m;c+=1)f[c]=l(c,b)||"null";h=f.length===0?"[]":e?"[\n"+e+f.join(",\n"+e)+"\n"+g+"]":"["+f.join(",")+"]";e=g;return h}if(i&&typeof i==="object"){m=i.length;for(c=0;c<m;c+=1)typeof i[c]==="string"&&(d=i[c],(h=l(d,b))&&f.push(o(d)+(e?": ":":")+h))}else for(d in b)Object.prototype.hasOwnProperty.call(b,d)&&(h=l(d,b))&&f.push(o(d)+(e?": ":":")+h);h=f.length===0?"{}":e?"{\n"+e+f.join(",\n"+e)+"\n"+g+"}":"{"+f.join(",")+ "}";e=g;return h}}if(typeof Date.prototype.toJSON!=="function")Date.prototype.toJSON=function(){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+k(this.getUTCMonth()+1)+"-"+k(this.getUTCDate())+"T"+k(this.getUTCHours())+":"+k(this.getUTCMinutes())+":"+k(this.getUTCSeconds())+"Z":null},String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(){return this.valueOf()};var q=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,e,n,r={"\u0008":"\\b","\t":"\\t","\n":"\\n","\u000c":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},i;if(typeof JSON.stringify!=="function")JSON.stringify=function(a,j,c){var d;n=e="";if(typeof c==="number")for(d=0;d<c;d+=1)n+=" ";else typeof c==="string"&&(n=c);if((i=j)&&typeof j!=="function"&&(typeof j!=="object"||typeof j.length!=="number"))throw Error("JSON.stringify");return l("", {"":a})};if(typeof JSON.parse!=="function")JSON.parse=function(a,e){function c(a,d){var g,f,b=a[d];if(b&&typeof b==="object")for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(f=c(b,g),f!==void 0?b[g]=f:delete b[g]);return e.call(a,d,b)}var d,a=String(a);q.lastIndex=0;q.test(a)&&(a=a.replace(q,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return d=eval("("+a+")"),typeof e==="function"?c({"":d},""):d;throw new SyntaxError("JSON.parse");}})();
+var icon_eye = ['21.32 9.44 26.33 8.84 22.26 11.25 24.93 16.40 33.72 16.40 38.68 11.99 34 10.06 33.59 12.99 30 11.25 32.02 8.82 36.36 8.84 47 13 36 21 21 21 13 13 20 4 38 2 47 13 44.10 12.62 37.13 4.10 21.04 5.92 16.91 11.32'];
+var icon_logo = ['550.2,537.1 553.7,537.1 540,525 523.8,539.3 523.8,540.5 551.5,540.5 540,550.6 529.8,541.6 526.5,541.6 540,553.6 556.3,539.3 556.3,538.2 528.5,538 540,528.1',
+                        '536.1,523.3 540,521 544.1,523.3 540,522.8',
+                        '545.1,523.5 549.7,523.6 551.9,527.7 548.7,525.2',
+                        '552.8,528.6 556.5,531.1 556.2,535.8 554.8,531.9',
+                        '556.4,536.9 558.4,541.1 555.8,544.9 556.5,540.9',
+                        '555.1,546.2 554.5,550.7 550.3,552.6 553,549.6',
+                        '549.3,553 546.5,556.6 541.9,555.9 545.8,554.9',
+                        '538.2,555.9 533.7,556.6 530.7,553.1 534.4,554.9',
+                        '529.8,552.4 525.6,550.7 524.9,546.1 527.1,549.6',
+                        '524.3,544.7 521.7,540.9 523.7,536.7 523.5,540.8',
+                        '523.9,535.6 523.7,531 527.5,528.4 525.3,531.9',
+                        '528.1,527.6 530.3,523.6 535,523.6 531.3,525.3',
+                        '552.7,523.5 552.2,524.3 554.4,527.6 556.9,530.6 558.5,531 558.2,527.7 557.6,525.5 555.1,524.2',
+                        '559.3,532.7 558.4,533.1 558.5,537 559,541 560.1,542.1 561.6,539.2 562.3,537 560.8,534.6',
+                        '559.9,544 558.9,543.8 556.8,547.2 555.2,550.8 555.5,552.4 558.4,550.7 560.1,549.2 560.2,546.4',
+                        '554.5,553.8 553.8,553.2 550.2,554.9 546.9,557.1 546.4,558.6 549.7,558.7 551.9,558.4 553.5,556',
+                        '544.6,559.1 544.3,558.2 540.4,557.9 536.4,558 535.2,559.1 538,560.9 540.1,561.7 542.6,560.5',
+                        '533.6,558.5 533.8,557.6 530.6,555.3 527.1,553.4 525.5,553.7 527,556.6 528.3,558.4 531.1,558.7',
+                        '524.4,552.4 525.1,551.8 523.6,548.1 521.7,544.6 520.2,544 519.9,547.3 520.1,549.5 522.3,551.3',
+                        '520,542.3 520.9,542.1 521.5,538.1 521.6,534.2 520.7,532.9 518.7,535.5 517.7,537.5 518.7,540.1',
+                        '521.6,530.9 522.5,531.2 525.2,528.2 527.5,525 527.4,523.4 524.3,524.5 522.4,525.7 521.7,528.4',
+                        '528.8,522.4 529.4,523.2 533.2,522.1 536.9,520.6 537.7,519.2 534.5,518.5 532.2,518.4 530.3,520.4',
+                        '542.2,519.3 542.7,520.3 546.1,521.7 549.8,523 551.4,522.5 549.4,519.9 547.8,518.3 545,518.5'];
+
+// ================ FUNCTIONS =============
+
+/** draw an colored icon button - returns a button object
+	@parem {parentObj} - object - ScriptUI panel or group
+	@parem {iconVec} - array of strings - SVG coords as string
+	@parem {iconColor} - object - icon color
+	@parem {size} - array - icon size
+*/
+function buttonColorVector(parentObj, iconVec, iconColor, size) {
+	var artSize = size;                                                         // defines the artsize before resizeing the button container
+	var btn = parentObj.add('button', [0,0,size[0],size[1], undefined]);				// add a basic button to style
+		btn.coord = vecToPoints(iconVec);
+		btn.onDraw = vecDraw;
+
+		return btn;
+
+	function vecToPoints(vecCoord) {                                            // func that converts SCG coords to ScriptUI coords
+		var points = [];
+		var n;
+
+		for(var i = 0; i < vecCoord.length; i++) {                                // loop through paths in a multi path icon
+			var eachNum = vecCoord[i].split(/[\s,]/);                               // create an array of all the numbers - split at spaces or commas
+			var coordinates = [];
+			var sets = [];
+
+			for (var k = 0; k < eachNum.length; k+=2) {                             // AI adds commas between coords, Sketch just spaces
+				sets.push(eachNum[k] + ',' + eachNum[k+1]);                           // add pairs of numbers to an array
+			}
+
+			for (var j = 0; j < sets.length; j++) {                                 // loop through all sets
+				n = sets[j].split(',');                                               // split each set apart
+				coordinates[j] = n;
+				coordinates[j][0] = (parseFloat(coordinates[j][0]));
+				coordinates[j][1] = (parseFloat(coordinates[j][1]));
+			}
+
+			points.push(coordinates);                                               // combine each x,y as a 2D array
+		}
+		return points;                                                            // return the 2D array
+	}
+
+	function vecDraw() {                                                        // func that does the drawing
+		with ( this ) {
+			graphics.drawOSControl();
+
+			// draw background
+			graphics.rectPath(0,0,size[0],size[1]);
+			graphics.fillPath(graphics.newBrush(graphics.BrushType.SOLID_COLOR, [0,0,0,0.15]));                 // set background color
+
+			// draw shape
+			try {
+			for (var i = 0; i < coord.length; i++) {
+				var line = coord[i];
+
+				graphics.newPath();
+				graphics.moveTo(line[0][0] + (size[0]/2 - artSize[0]/2), line[0][1] + (size[1]/2 - artSize[1]/2));
+				for (var j = 0; j < line.length; j++) {
+					graphics.lineTo(line[j][0] + (size[0]/2 - artSize[0]/2), line[j][1] + (size[1]/2 - artSize[1]/2));
+				}
+				graphics.fillPath(graphics.newBrush(graphics.BrushType.SOLID_COLOR, hexToArray(iconColor)));      // set icon color
+			}
+			} catch (e) {}
+		}
+	}
+
+	function hexToArray(hexString) {                                          // func that converts hex to AE color string
+		var hexColor = hexString.replace('#', '');
+		var r = parseInt(hexColor.slice(0, 2), 16) / 255,
+				g = parseInt(hexColor.slice(2, 4), 16) / 255,
+				b = parseInt(hexColor.slice(4, 6), 16) / 255;
+		return [r, g, b, 1];
+	}
+}
+
+/** draw an text button with a colored background - returns a button object
+	@parem {parentObj} - object - ScriptUI panel or group
+	@parem {accentColor} - string - icon color
+	@parem {buttonText} - string - button text
+*/
+function buttonColorText(parentObj, accentColor, buttonText) {
+	var btn = parentObj.add('button', undefined, '', {name: 'ok'});    // add a basic button to style
+			btn.fillBrush = btn.graphics.newBrush( btn.graphics.BrushType.SOLID_COLOR, hexToArray(accentColor) );
+
+			btn.text = buttonText.toUpperCase();
+
+			btn.textPen = btn.graphics.newPen( btn.graphics.PenType.SOLID_COLOR, hexToArray('#ffffff'), 1 );
+
+			btn.onDraw = gfxDraw;
+
+	return btn;
+
+
+	function gfxDraw() {                                                        // func that does the drawing
+		with ( this ) {
+			graphics.drawOSControl();
+
+			// draw background
+			graphics.rectPath(0,0,size[0],size[1]);
+			graphics.fillPath(fillBrush);                 // set background color
+
+			if (text) {
+				graphics.drawString(
+					text,
+					textPen,
+					(size[0]-graphics.measureString(text, graphics.font, size[0])[0])/2,
+					(size[1]-graphics.measureString(text, graphics.font, size[0])[1])/1.75,
+					graphics.font);
+			}
+		}
+	}
+
+	function hexToArray(hexString) {                                          // func that converts hex to AE color string
+		var hexColor = hexString.replace('#', '');
+		var r = parseInt(hexColor.slice(0, 2), 16) / 255,
+				g = parseInt(hexColor.slice(2, 4), 16) / 255,
+				b = parseInt(hexColor.slice(4, 6), 16) / 255;
+		return [r, g, b, 1];
+	}
+}
+
+/** open url in browser
+	@parem {url} - string - url
+*/
+function visitURL(url) {    // create clickable links
+		if ($.os.indexOf("Windows") != -1) {
+				system.callSystem('cmd /c "' + Folder.commonFiles.parent.fsName + "\\Internet Explorer\\iexplore.exe" + '" ' + url);
+		} else {
+				var cmd = 'open "' + url + '"';
+				system.callSystem(cmd);
+		}
+}
