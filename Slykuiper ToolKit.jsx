@@ -69,16 +69,16 @@
                 var obj_r3b3 = mainUI.grp.dropDownCollection.leftSide.rowThree.buttonThree;
                 var obj_logo = mainUI.grp.watermark.rightSide.logo;
                 
-                var icon_r1b1 = buttonColorVector(obj_r1b1, icon_eye, '#FFFFFF', [45, 45]);
-                var icon_r1b2 = buttonColorVector(obj_r1b2, icon_logo, '#FFFFFF', [45, 45]);
-                var icon_r1b3 = buttonColorVector(obj_r1b3, icon_logo, '#FFFFFF', [45, 45]);
-                var icon_r2b1 = buttonColorVector(obj_r2b1, icon_logo, '#FFFFFF', [45, 45]);
-                var icon_r2b2 = buttonColorVector(obj_r2b2, icon_logo, '#FFFFFF', [45, 45]);
-                var icon_r2b3 = buttonColorVector(obj_r2b3, icon_logo, '#FFFFFF', [45, 45]);
-                var icon_r3b1 = buttonColorVector(obj_r3b1, icon_logo, '#FFFFFF', [45, 45]);
-                var icon_r3b2 = buttonColorVector(obj_r3b2, icon_logo, '#FFFFFF', [45, 45]);
-                var icon_r3b3 = buttonColorVector(obj_r3b3, icon_logo, '#FFFFFF', [45, 45]);
-                var icon_logo = buttonColorVector(obj_logo, icon_logo, '#FFFFFF', [45, 45]);
+                var icon_r1b1 = buttonColorVector(obj_r1b1, icon_textlayer, '#FFFFFF', [45, 45]);
+                var icon_r1b2 = buttonColorVector(obj_r1b2, icon_solidlayer, '#FFFFFF', [45, 45]);
+                var icon_r1b3 = buttonColorVector(obj_r1b3, icon_lightlayer, '#FFFFFF', [45, 45]);
+                var icon_r2b1 = buttonColorVector(obj_r2b1, icon_cameralayer, '#FFFFFF', [45, 45]);
+                var icon_r2b2 = buttonColorVector(obj_r2b2, icon_nulllayer, '#FFFFFF', [45, 45]);
+                var icon_r2b3 = buttonColorVector(obj_r2b3, icon_shapelayer, '#FFFFFF', [45, 45]);
+                var icon_r3b1 = buttonColorVector(obj_r3b1, icon_adjustmentlayer, '#FFFFFF', [45, 45]);
+                //var icon_r3b2 = buttonColorVector(obj_r3b2, icon_textlayer, '#FFFFFF', [45, 45]);
+                //var icon_r3b3 = buttonColorVector(obj_r3b3, icon_textlayer, '#FFFFFF', [45, 45]);
+                var icon_logo = buttonColorVector(obj_logo, icon_textlayer, '#FFFFFF', [45, 45]);
                 
                 icon_r1b1.onClick = function(){createCompLayers("text");}
                 icon_r1b2.onClick = function(){createCompLayers("solid");}
