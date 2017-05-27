@@ -58,38 +58,27 @@
             createAdditionalUI();
             
             function createAdditionalUI(){ // create additional menu objects
-                var obj_r1b1 = mainUI.grp.dropDownCollection.leftSide.rowOne.buttonOne;
-                var obj_r1b2 = mainUI.grp.dropDownCollection.leftSide.rowOne.buttonTwo;
-                var obj_r1b3 = mainUI.grp.dropDownCollection.leftSide.rowOne.buttonThree;
-                var obj_r2b1 = mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonOne;
-                var obj_r2b2 = mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonTwo;
-                var obj_r2b3 = mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonThree;
-                var obj_r3b1 = mainUI.grp.dropDownCollection.leftSide.rowThree.buttonOne;
-                var obj_r3b2 = mainUI.grp.dropDownCollection.leftSide.rowThree.buttonTwo;
-                var obj_r3b3 = mainUI.grp.dropDownCollection.leftSide.rowThree.buttonThree;
-                var obj_logo = mainUI.grp.watermark.rightSide.logo;
+                var btn_r1b1 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowOne.buttonOne, icon_textlayer, '#FFFFFF', [45, 45]);
+                var btn_r1b2 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowOne.buttonTwo, icon_solidlayer, '#FFFFFF', [45, 45]);
+                var btn_r1b3 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowOne.buttonThree, icon_lightlayer, '#FFFFFF', [45, 45]);
+                var btn_r2b1 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonOne, icon_cameralayer, '#FFFFFF', [45, 45]);
+                var btn_r2b2 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonTwo, icon_nulllayer, '#FFFFFF', [45, 45]);
+                var btn_r2b3 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonThree, icon_shapelayer, '#FFFFFF', [45, 45]);
+                var btn_r3b1 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowThree.buttonOne, icon_adjustmentlayer, '#FFFFFF', [45, 45]);
+                //var btn_r3b2 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowThree.buttonTwo, icon_textlayer, '#FFFFFF', [45, 45]);
+                //var btn_r3b3 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowThree.buttonThree, icon_textlayer, '#FFFFFF', [45, 45]);
+                var btn_logo = buttonColorVector(mainUI.grp.watermark.rightSide.logo, icon_logo, '#FFFFFF', [45, 45]);
                 
-                var icon_r1b1 = buttonColorVector(obj_r1b1, icon_textlayer, '#FFFFFF', [45, 45]);
-                var icon_r1b2 = buttonColorVector(obj_r1b2, icon_solidlayer, '#FFFFFF', [45, 45]);
-                var icon_r1b3 = buttonColorVector(obj_r1b3, icon_lightlayer, '#FFFFFF', [45, 45]);
-                var icon_r2b1 = buttonColorVector(obj_r2b1, icon_cameralayer, '#FFFFFF', [45, 45]);
-                var icon_r2b2 = buttonColorVector(obj_r2b2, icon_nulllayer, '#FFFFFF', [45, 45]);
-                var icon_r2b3 = buttonColorVector(obj_r2b3, icon_shapelayer, '#FFFFFF', [45, 45]);
-                var icon_r3b1 = buttonColorVector(obj_r3b1, icon_adjustmentlayer, '#FFFFFF', [45, 45]);
-                //var icon_r3b2 = buttonColorVector(obj_r3b2, icon_textlayer, '#FFFFFF', [45, 45]);
-                //var icon_r3b3 = buttonColorVector(obj_r3b3, icon_textlayer, '#FFFFFF', [45, 45]);
-                var icon_logo = buttonColorVector(obj_logo, icon_textlayer, '#FFFFFF', [45, 45]);
-                
-                icon_r1b1.onClick = function(){createCompLayers("text");}
-                icon_r1b2.onClick = function(){createCompLayers("solid");}
-                icon_r1b3.onClick = function(){createCompLayers("light");}
-                icon_r2b1.onClick = function(){createCompLayers("camera");}
-                icon_r2b2.onClick = function(){createCompLayers("null");}
-                icon_r2b3.onClick = function(){createCompLayers("shape");}
-                icon_r3b1.onClick = function(){createCompLayers("adjustment");}
-                //icon_r3b2.onClick = function(){createCompLayers("adjustment");}
-                //icon_r3b3.onClick = function(){createCompLayers("adjustment");}
-                icon_logo.onClick = function(){visitURL('http://slykuiper.com');};
+                btn_r1b1.onClick = function(){createCompLayers("text");}
+                btn_r1b2.onClick = function(){createCompLayers("solid");}
+                btn_r1b3.onClick = function(){createCompLayers("light");}
+                btn_r2b1.onClick = function(){createCompLayers("camera");}
+                btn_r2b2.onClick = function(){createCompLayers("null");}
+                btn_r2b3.onClick = function(){createCompLayers("shape");}
+                btn_r3b1.onClick = function(){createCompLayers("adjustment");}
+                //btn_r3b2.onClick = function(){createCompLayers("adjustment");}
+                //btn_r3b3.onClick = function(){createCompLayers("adjustment");}
+                btn_logo.onClick = function(){visitURL('http://slykuiper.com');}
                 
                 var expressionDDList =  mainUI.grp.dropDownCollection.leftSide.theDropDownList;
                 expressionDDList.onChange = function(){
