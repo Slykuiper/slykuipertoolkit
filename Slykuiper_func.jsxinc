@@ -23,11 +23,15 @@ function applyExpression(expressionName){
         if(expressionNames[i] == expressionName){ // found matching expression
             if(expressionName == "loopout pingpong" || expressionName == "loopout cycle" || expressionName == "Beam 3Dto2D" || expressionName == "path xpos offset"){
                 //expression doesn't have any preset/sliders/controls
-                thisLayerProperties[0].expression = expressionCodes[i];
+                for(a=0;a<thisLayerProperties.length;a++){
+                    thisLayerProperties[a].expression = expressionCodes[i];
+                }
             }else{
                 // expression has presets/sliders/controls
-                thisLayer.Effects.addProperty(expressionName);
-                thisLayerProperties[0].expression = expressionCodes[i];
+                for(b=0;b<thisLayerProperties.length;b++){
+                    thisLayer.Effects.addProperty(expressionName);
+                    thisLayerProperties[b].expression = expressionCodes[i];
+                }
             }
         }
     }
@@ -246,6 +250,10 @@ var icon_logo = ['35.9,19.7 32.6,19.7 22.6,10.9 11.4,20.9 38.5,20.8 38.6,21.9 22
                             '0.9,20.1 2.2,17.6 4.1,15.7 4.7,16 4.8,17 4.6,20.5 4.3,23.9 3.8,24.9 3.1,25.2 1.7,22.6',
                             '5.4,8.6 7.9,7.2 10.5,6.5 10.8,7.1 10.4,7.9 8.4,10.8 6.3,13.6 5.4,14.2 4.6,14 4.8,11.1',
                             '15,1.5 17.8,1.6 20.4,2.4 20.4,3 19.6,3.6 16.3,4.9 13.1,6.1 12.1,6.2 11.4,5.6 13.2,3.2'];    
+var icon_newcomp = ['8.3,13.3 3.3,43.3 2.8,43.2 2.2,43 1.8,42.4 1.7,41.7 1.7,3.3 1.9,2.6 2.3,2.1 2.7,1.8 3.3,1.7 10,1.7 10.6,1.9 12.6,4.6 13.3,5 40,5 40.7,5.2 41.2,5.5 41.5,6.1 41.7,6.7 41.7,11.7 10,11.7 9.4,11.9 8.8,12.2 8.5,12.7',
+                            '9.2,13.6 9.3,13.1 9.6,12.8 10.1,12.5 10.8,12.5 40.6,12.6 41.2,12.8 41.5,13.2 41.7,13.6 41.9,14.4 41.7,41.9 41.5,42.4 41.3,42.9 40.8,43.2 40.3,43.3 4.2,43.4'];
+var icon_precomp = ['8.3,13.3 3.3,43.3 2.8,43.2 2.2,43 1.8,42.4 1.7,41.7 1.7,3.3 1.9,2.6 2.3,2.1 2.7,1.8 3.3,1.7 10,1.7 10.6,1.9 12.6,4.6 13.3,5 40,5 40.7,5.2 41.2,5.5 41.5,6.1 41.7,6.7 41.7,11.7 10,11.7 9.4,11.9 8.8,12.2 8.5,12.7',
+                            '40.6,12.7 41.2,12.9 41.5,13.2 41.7,13.6 41.9,14.4 41.7,41.9 41.5,42.4 41.3,42.9 40.8,43.2 40.3,43.3 4.2,43.4 9.2,13.6 9.3,13.1 9.6,12.8 10.1,12.5 10.6,12.5 21,12.6 21,25 14.9,25 14.7,30 21,30 21,37 26,37 26,30 31.9,30 32,25 26,25 26,18 21.3,18 21.3,12.5'];
 
 
 // ================ FUNCTIONS =============
@@ -378,4 +386,96 @@ function visitURL(url) {    // create clickable links
 				var cmd = 'open "' + url + '"';
 				system.callSystem(cmd);
 		}
+}
+
+var presetEffects = "<!-- Slykuiper_ToolKit_Start -->\r\n" +
+"<Effect matchname='seamless wiggle loop' name='$$$/AE/Preset/slykuiper_expr1=seamless wiggle loop'>\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Frequency' default='1' valid_min='0' valid_max='10' slider_min='0' slider_max='10'  precision='2' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Amplitude' default='50' valid_min='-100000' valid_max='100000' slider_min='-100000' slider_max='100000'  precision='2' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Loop Time' default='3' valid_min='0' valid_max='1000' slider_min='0' slider_max='1000'  precision='2' />\r\n" +
+"</Effect>\r\n" +
+"<Effect matchname='keyframe overshoot' name='$$$/AE/Preset/slykuiper_expr2=keyframe overshoot'>\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Frequency' default='2' valid_min='0.001' valid_max='100' slider_min='0.001' slider_max='10'  precision='2' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Decay' default='5' valid_min='0' valid_max='100' slider_min='0' slider_max='10' precision='2' />\r\n" +
+"</Effect>\r\n" +
+"<Effect matchname='keyframe bounce back' name='$$$/AE/Preset/slykuiper_expr3=keyframe bounce back'>\r\n" +
+"<Slider name='$$$/AE/Preset/slider=e' default='0.7' valid_min='-100000' valid_max='100000' slider_min='-10' slider_max='10'  precision='2' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=g' default='5000' valid_min='-100000' valid_max='100000' slider_min='-10000' slider_max='10000' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=nMax' default='9' valid_min='0' valid_max='10' slider_min='0' slider_max='1000' />\r\n" +
+"</Effect>\r\n" +
+"<Effect matchname='inertial bounce' name='$$$/AE/Preset/slykuiper_expr4=inertial bounce'>\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Amplitude' default='0.05' valid_min='-100000' valid_max='100000' slider_min='-100' slider_max='100'  precision='2' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Frequency' default='4' valid_min='0' valid_max='1000' slider_min='0' slider_max='1000' precision='1' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Decay' default='8' valid_min='0' valid_max='10' slider_min='0' slider_max='1000' precision='1' />\r\n" +
+"</Effect>\r\n" +
+"<Effect matchname='circle path' name='$$$/AE/Preset/slykuiper_expr5=circle path'>\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Radius' default='300' valid_min='0' valid_max='10000' slider_min='0' slider_max='10000' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Speed' default='200' valid_min='0' valid_max='1000' slider_min='0' slider_max='1000' />\r\n" +
+"<Point name='$$$/AE/Preset/point=Center' default_x='0.5' default_y='0.5' />\r\n" +
+"</Effect>\r\n" +
+"<Effect matchname='spiral path' name='$$$/AE/Preset/slykuiper_expr6=spiral path'>\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Radius' default='300' valid_min='0' valid_max='10000' slider_min='0' slider_max='10000' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Speed' default='200' valid_min='0' valid_max='1000' slider_min='0' slider_max='1000' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Z-Rate' default='0' valid_min='-10000' valid_max='10000' slider_min='-10000' slider_max='10000' />\r\n" +
+"</Effect>\r\n" +
+"<Effect matchname='rot based xpos' name='$$$/AE/Preset/slykuiper_expr7=rot based xpos'>\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Distance' default='0' valid_min='-100000' valid_max='100000' slider_min='-100000' slider_max='100000' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Torque' default='1' valid_min='-1000' valid_max='1000' slider_min='-100' slider_max='100' />\r\n" +
+"</Effect>\r\n" +
+"<Effect matchname='rot based ypos' name='$$$/AE/Preset/slykuiper_expr8=rot based ypos'>\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Distance' default='0' valid_min='-100000' valid_max='100000' slider_min='-100000' slider_max='100000' />\r\n" +
+"<Slider name='$$$/AE/Preset/slider=Torque' default='1' valid_min='-1000' valid_max='1000' slider_min='-100' slider_max='100' />\r\n" +
+"</Effect>\r\n" +
+"<Effect matchname='Angle Duration Control' name='$$$/AE/Preset/slykuiper_expr9=Angle Duration Control'>\r\n" +
+"<Angle name='$$$/AE/Preset/angle=Angle' default='0' />\r\n" +
+"</Effect>\r\n" +
+"<!-- Slykuiper_ToolKit_End -->\r\n";
+
+installPresets = function (){ // add presets to preset.xml
+if (app.preferences.getPrefAsLong("Main Pref Section", "Pref_SCRIPTING_FILE_NETWORK_SECURITY") == 1)
+{
+    var appPath = Folder.appPackage.fsName;
+    var presetEffectsFile = new File(appPath + "\\PresetEffects.xml");
+    if ($.os.toLowerCase().indexOf("mac") >= 0) presetEffectsFile = new File(appPath + "/Contents/Resources/PresetEffects.xml");
+    if (presetEffectsFile.exists)
+    {
+        presetEffectsFile.open("r","TEXT");
+        var presetEffectsString = presetEffectsFile.read();
+        presetEffectsFile.close();
+        //update
+        var startIndex = presetEffectsString.indexOf("<!-- Slykuiper_ToolKit_Start -->");
+        var endIndex = presetEffectsString.indexOf("<!-- Slykuiper_ToolKit_End -->") + 32;
+        if (startIndex >= 0)
+        {
+            var stringToRemove = presetEffectsString.substring(startIndex,endIndex);
+            presetEffectsString = presetEffectsString.replace(stringToRemove,presetEffects);
+        }
+        else
+        {
+            presetEffectsString = presetEffectsString.replace("</Effects>",presetEffects + "\r\n</Effects>");
+        }
+        //gets write access
+        if ($.os.toLowerCase().indexOf("mac") >= 0)
+        {
+            var cmd = "chmod u+rw  " + "\"" + appPath + "/PresetEffects.xml\"";
+            system.callSystem(cmd);
+        }
+        else
+        {
+            var cmd = "cmd /c attrib -r /S /D \"" + appPath + "\"";
+            system.callSystem(cmd);
+            cmd = "cmd /c attrib -r /S /D \"" + appPath + "\\PresetEffects.xml\"";
+            system.callSystem(cmd);
+        }
+        //backup file
+        presetEffectsFile.copy(presetEffectsFile.fullName + ".bak");
+        //write the new file
+        var isReadOnly = presetEffectsFile.readonly;
+        presetEffectsFile.readonly = false;
+        presetEffectsFile.open("w","TEXT");
+        presetEffectsFile.write(presetEffectsString);
+        presetEffectsFile.close();
+        presetEffectsFile.readonly = isReadOnly;
+        }
+    }
 }

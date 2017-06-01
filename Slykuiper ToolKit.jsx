@@ -39,8 +39,9 @@
                                     },\
                                 },\
                                 rightSide: Group{orientation:'column', alignment:['','top'],\
-                                    applyExpression: Button{text:'Apply'},\
-                                    infoBtn: Button{text:'Info'},\
+                                    applyExpression: Button{text:'Apply', helpTip:'Apply listed expression to selected property.'},\
+                                    infoBtn: Button{text:'Info', helpTip:'Expression information.'},\
+                                    installBtn: Button{text:'Install', helpTip:'Install Presets'},\
                                 },\
                             },\
                             watermark: Group{orientation:'row', alignment:['fill', 'bottom'], alignChildren:['fill', ''],\
@@ -65,27 +66,37 @@
                 var btn_r2b2 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonTwo, icon_nulllayer, '#FFFFFF', [45, 45]);
                 var btn_r2b3 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowTwo.buttonThree, icon_shapelayer, '#FFFFFF', [45, 45]);
                 var btn_r3b1 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowThree.buttonOne, icon_adjustmentlayer, '#FFFFFF', [45, 45]);
-                //var btn_r3b2 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowThree.buttonTwo, icon_textlayer, '#FFFFFF', [45, 45]);
-                //var btn_r3b3 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowThree.buttonThree, icon_textlayer, '#FFFFFF', [45, 45]);
+                var btn_r3b2 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowThree.buttonTwo, icon_newcomp, '#FFFFFF', [45, 45]);
+                var btn_r3b3 = buttonColorVector(mainUI.grp.dropDownCollection.leftSide.rowThree.buttonThree, icon_precomp, '#FFFFFF', [45, 45]);
                 var btn_logo = buttonColorVector(mainUI.grp.watermark.rightSide.logo, icon_logo, '#FFFFFF', [45, 45]);
                 
-                btn_r1b1.onClick = function(){createCompLayers("text");}
-                btn_r1b2.onClick = function(){createCompLayers("solid");}
-                btn_r1b3.onClick = function(){createCompLayers("light");}
-                btn_r2b1.onClick = function(){createCompLayers("camera");}
-                btn_r2b2.onClick = function(){createCompLayers("null");}
-                btn_r2b3.onClick = function(){createCompLayers("shape");}
-                btn_r3b1.onClick = function(){createCompLayers("adjustment");}
-                //btn_r3b2.onClick = function(){createCompLayers("adjustment");}
-                //btn_r3b3.onClick = function(){createCompLayers("adjustment");}
+                btn_r1b1.helpTip = "Create a text layer.";
+                btn_r1b2.helpTip = "Create a solid layer.";
+                btn_r1b3.helpTip = "Create a light.";
+                btn_r2b1.helpTip = "Create a camera.";
+                btn_r2b2.helpTip = "Create a null object.";
+                btn_r2b3.helpTip = "Create a shape layer.";
+                btn_r3b1.helpTip = "Create an adjustment layer.";
+                btn_r3b2.helpTip = "Create a new composition.";
+                btn_r3b3.helpTip = "Precompose selected items.";
+                btn_logo.helpTip = "Visit my website!";
+                
+                btn_r1b1.onClick = function(){createCompLayers("text", 1, "Text Layer");}
+                btn_r1b2.onClick = function(){createCompLayers("solid", 1, "Solid Layer");}
+                btn_r1b3.onClick = function(){createCompLayers("light", 1, "Light Layer");}
+                btn_r2b1.onClick = function(){createCompLayers("camera", 1, "Camera");}
+                btn_r2b2.onClick = function(){createCompLayers("null", 0, "Null Object");}
+                btn_r2b3.onClick = function(){createCompLayers("shape", 0, "Shape Layer");}
+                btn_r3b1.onClick = function(){createCompLayers("adjustment", 1, "Adjustment Layer");}
+                //btn_r3b2.onClick = function(){createNewComp();}
+                //btn_r3b3.onClick = function(){createPrecomp();}
                 btn_logo.onClick = function(){visitURL('http://slykuiper.com');}
                 
                 var expressionDDList =  mainUI.grp.dropDownCollection.leftSide.theDropDownList;
                 expressionDDList.onChange = function(){
                     infoBoxTopText.text = expressionDDList.selection.text;
                     infoBoxTopText.text = infoBoxTopText.text.toUpperCase();
-                    infoBoxBottomText.text = getExpressionInfo(expressionDDList.selection.text);
-                }
+                    infoBoxBottomText.text = getExpressionInfo(expressionDDList.selection.text);}
                 // info box
                 var infoBox = new Window('palette',"Expression Information",undefined,{closeButton:true,resizeable:false, orientation:["column"]});
                 infoBox.size = [300,300];
@@ -106,6 +117,7 @@
                 mainUI.grp.dropDownCollection.rightSide.infoBtn.onClick = function(){ // info button toggle
                     if (infoBox.visible) infoBox.hide(); else infoBox.show();
                 }
+                mainUI.grp.dropDownCollection.rightSide.installBtn.onClick = installPresets();
             }
 
             function createDropDownFunctions(){
@@ -128,58 +140,38 @@
                 }
             }
             
-            function createCompLayers(type){
+            function createCompLayers(type, hasName, refName){
                 var curComp = app.project.activeItem;
-                if (!curComp || !(curComp instanceof CompItem)){
+                if (!curComp || !(curComp instanceof CompItem)){ // no composition to create layers in
                     alert('noComp');
                     return;
                 }
-                // what type of layer
-                if(type == "text"){
-                    str = prompt('Text: ', '');
-                    if(str.length < 1){
-                        return;
+                if(hasName == 1){ // comp requires a name
+                    str = prompt('Name: ', '');
+                    if(str.length < 1){return;}
+                    if(type == "text"){
+                        curComp.layers.addText(str);}
+                    if(type == "solid"){
+                        var newSolid = curComp.layers.addSolid([1,1,1], str, curComp.width, curComp.height, curComp.pixelAspect, curComp.duration);
+                        newSolid.moveToBeginning();}
+                    if(type == "light"){
+                        curComp.layers.addLight(str, [curComp.width/2, curComp.height/2]);}
+                    if(type == "camera"){
+                        var newCam = curComp.layers.addCamera(str, [curComp.width/2, curComp.height/2]);
+                        newCam.position = [curComp.width, curComp.height, -2400];}
+                    if(type == "adjustment"){
+                        var newAdj = curComp.layers.addSolid([1,1,1],str, curComp.width, curComp.height, curComp.pixelAspect, curComp.duration);
+                        newAdj.label = 5;
+                        newAdj.adjustmentLayer = true;
+                        newAdj.moveToBeginning();}
+                }
+                else {
+                    if(type == "null"){
+                        var newNull = curComp.layers.addNull(curComp.duration);
                     }
-                    curComp.layers.addText(str);
-                }
-                if(type == "solid"){
-                    str = prompt('Solid layer name: ', '');
-                    if(str.length < 1){
-                        return;
+                    if(type == "shape"){
+                        curComp.layers.addShape();
                     }
-                    var newSolid = curComp.layers.addSolid([1,1,1], str, curComp.width, curComp.height, curComp.pixelAspect, curComp.duration);
-                    newSolid.moveToBeginning();
-                }
-                if(type == "light"){
-                    str = prompt('Light name: ', '');
-                    if(str.length < 1){
-                        return;
-                    }
-                    curComp.layers.addLight(str, [curComp.width/2, curComp.height/2]);
-                }
-                if(type == "camera"){
-                    str = prompt('Camera name: ', '');
-                    if(str.length < 1){
-                        return;
-                    }
-                    var newCam = curComp.layers.addCamera(str, [curComp.width/2, curComp.height/2]);
-                    newCam.position = [curComp.width, curComp.height, -2400];
-                }
-                if(type == "null"){
-                    var newNull = curComp.layers.addNull(curComp.duration);
-                }
-                if(type == "shape"){
-                    curComp.layers.addShape();
-                }
-                if(type == "adjustment"){
-                    str = prompt('Adjustment layer name: ', '');
-                    if(str.length < 1){
-                        return;
-                    }
-                    var newAdj = curComp.layers.addSolid([1,1,1],str, curComp.width, curComp.height, curComp.pixelAspect, curComp.duration);
-                    newAdj.label = 5;
-                    newAdj.adjustmentLayer = true;
-                    newAdj.moveToBeginning();
                 }
             }
             
